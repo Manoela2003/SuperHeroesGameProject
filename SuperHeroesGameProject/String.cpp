@@ -1,4 +1,5 @@
 #include "String.h"
+#pragma warning(disable: 4996)
 
 String::String(size_t capacity)
 {
@@ -62,7 +63,7 @@ void String::free()
 	_data = nullptr;
 }
 
-void String::moveFrom(String& other){
+void String::moveFrom(String&& other){
 	_data = other._data;
 	other._data = nullptr;
 	_length = other._length;
@@ -87,7 +88,7 @@ void String::copyFrom(const String& other)
 
 String::String(String&& other) noexcept
 {
-	moveFrom(other);
+	moveFrom(std::move(other));
 }
 
 String& String::operator=(String&& other) noexcept
@@ -95,7 +96,7 @@ String& String::operator=(String&& other) noexcept
 	if (this != &other)
 	{
 		free();
-		moveFrom(other);
+		moveFrom(std::move(other));
 	}
 	return *this;
 }

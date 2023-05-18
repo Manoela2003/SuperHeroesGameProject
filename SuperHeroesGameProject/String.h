@@ -8,7 +8,7 @@ class String // from lectures
 
 	void copyFrom(const String& data);
 	void free();
-	void moveFrom(String& other);
+	void moveFrom(String&& other);
 
 	explicit String(size_t capacity);
 public:
