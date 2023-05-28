@@ -22,6 +22,7 @@ public:
 	Vector<T>& operator=(Vector&& other);
 	~Vector();
 
+	unsigned GetCount() const;
 	void AddElement(const T& obj);
 };
 
@@ -68,6 +69,11 @@ Vector<T>& Vector<T>::operator=(Vector&& other) {
 template<typename T>
 Vector<T>::~Vector() {
 	free();
+}
+
+template<typename T>
+unsigned Vector<T>::GetCount() const{
+	return count;
 }
 
 template<typename T>
