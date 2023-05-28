@@ -10,9 +10,17 @@ bool ContainsDigits(const char* name) {
 	return false;
 }
 
-bool ContainsLetters(const char* name) {
+bool ContainsCapitalLetter(const char* name) {
 	for (int i = 0; i < strlen(name); i++) {
-		if ((name[i] >= 'a' && name[i] <= 'z') || (name[i] >= 'A' && name[i] <= 'Z'))
+		if (name[i] >= 'A' && name[i] <= 'Z')
+			return true;
+	}
+	return false;
+}
+
+bool ContainsLowerCaseLetter(const char* name) {
+	for (int i = 0; i < strlen(name); i++) {
+		if (name[i] >= 'a' && name[i] <= 'z')
 			return true;
 	}
 	return false;
@@ -67,8 +75,11 @@ void IsPasswordValid(const char* pass) {
 	if (!ContainsDigits(pass))
 		throw std::logic_error("The password must contains at least one digit");
 
-	if (!ContainsLetters(pass))
-		throw std::logic_error("The password must contains at least one letter");
+	if (!ContainsCapitalLetter(pass))
+		throw std::logic_error("The password must contains at least one capital letter");
+
+	if(!ContainsLowerCaseLetter(pass))
+		throw std::logic_error("The password must contains at least one lower case letter");
 
 	if (!ContainsSpecialSymbols(pass))
 		throw std::logic_error("The password must contains at least one special symbol: '@', '#', '-', '_'");
