@@ -3,7 +3,7 @@
 #include "Vector.hpp"
 #include "GlobalConstants.h"
 
-class Player : private User {
+class Player : public User {
 private:
 	double balance = player_Starting_Balance;
 
