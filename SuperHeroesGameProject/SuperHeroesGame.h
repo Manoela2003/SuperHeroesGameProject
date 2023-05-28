@@ -9,10 +9,14 @@ private:
 	Vector<SharedPtr<Administrator>> administrators;
 	Vector<SharedPtr<Player>> players;
 
+	unsigned IndexOfloggedInAdmin = -1;
+
 public:
 	SuperHeroesGame() = default;
 
-	void AddAdministrator(const Administrator& other);
-	void AddPlayer(const Player& other);
+	bool AddAdministrator(const Administrator& other);
+	bool AddPlayer(const Player& other);
+	bool DeletePlayer(const char* username);
+
 };
 
