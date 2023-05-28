@@ -2,7 +2,7 @@
 #include <cstring>
 #include <stdexcept>
 
-bool ContainsDigits(const char* name) {
+static bool ContainsDigits(const char* name) {
 	for (int i = 0; i < strlen(name); i++) {
 		if (name[i] >= '0' && name[i] <= '9')
 			return true;
@@ -10,7 +10,7 @@ bool ContainsDigits(const char* name) {
 	return false;
 }
 
-bool ContainsCapitalLetter(const char* name) {
+static bool ContainsCapitalLetter(const char* name) {
 	for (int i = 0; i < strlen(name); i++) {
 		if (name[i] >= 'A' && name[i] <= 'Z')
 			return true;
@@ -18,7 +18,7 @@ bool ContainsCapitalLetter(const char* name) {
 	return false;
 }
 
-bool ContainsLowerCaseLetter(const char* name) {
+static bool ContainsLowerCaseLetter(const char* name) {
 	for (int i = 0; i < strlen(name); i++) {
 		if (name[i] >= 'a' && name[i] <= 'z')
 			return true;
@@ -26,7 +26,15 @@ bool ContainsLowerCaseLetter(const char* name) {
 	return false;
 }
 
-bool ContainsAsperand(const char* name) {
+static bool ContainsLowerCaseLettersOnly(const char* name) {
+	for (int i = 0; i < strlen(name); i++) {
+		if (name[i] < 'a' || name[i] > 'z')
+			return false;
+	}
+	return true;
+}
+
+static bool ContainsAsperand(const char* name) {
 	for (int i = 0; i < strlen(name); i++) {
 		if (name[i] == '@')
 			return true;
@@ -34,7 +42,7 @@ bool ContainsAsperand(const char* name) {
 	return false;
 }
 
-bool ContainsSpecialSymbols(const char* name) {
+static bool ContainsSpecialSymbols(const char* name) {
 	for (int i = 0; i < strlen(name); i++) {
 		if (name[i] == '@' || name[i] == '#' || name[i] == '-' || name[i] == '_')
 			return true;
@@ -42,11 +50,11 @@ bool ContainsSpecialSymbols(const char* name) {
 	return false;
 }
 
-bool StartsWithCapitalLetter(const char* name) {
+static bool StartsWithCapitalLetter(const char* name) {
 	return (name[0] >= 'A' && name[0] <= 'Z') ? true : false;
 }
 
-bool IsEmailValid(const char* email) {
+static bool IsEmailValid(const char* email) {
 	if (!email)
 		throw std::invalid_argument("The email doesn't exist");
 
@@ -54,7 +62,7 @@ bool IsEmailValid(const char* email) {
 		throw std::logic_error("Not a valid email!. It must contains '@'");
 }
 
-void IsNameValid(const char* name) {
+static void IsNameValid(const char* name) {
 	if (!name)
 		throw std::invalid_argument("The name doesn't exist");
 
@@ -65,7 +73,7 @@ void IsNameValid(const char* name) {
 		throw std::logic_error("The name cannot contain digits");
 }
 
-void IsPasswordValid(const char* pass) {
+static void IsPasswordValid(const char* pass) {
 	if (!pass)
 		throw std::invalid_argument("The password doesn't exist");
 
@@ -83,4 +91,15 @@ void IsPasswordValid(const char* pass) {
 
 	if (!ContainsSpecialSymbols(pass))
 		throw std::logic_error("The password must contains at least one special symbol: '@', '#', '-', '_'");
+}
+
+static void IsUsernameValid(const char* username) {
+	if (!username)
+		throw std::invalid_argument("The username doesn't exist");
+
+	if (strlen(username) > 16)
+		throw std::logic_error("The username can't be longer than 16 characters");
+
+	if (!ContainsLowerCaseLettersOnly(username))
+		throw std::logic_error("The username must contains only lower case letters");
 }
