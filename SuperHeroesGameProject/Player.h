@@ -9,5 +9,7 @@ private:
 
 public:
 	Player(const char* firstName, const char* lastName, const char* email, const char* username, const char* password);
+
+	const char* GetUsername() const;
 };
 
