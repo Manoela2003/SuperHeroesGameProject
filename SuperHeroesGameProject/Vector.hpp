@@ -38,17 +38,17 @@ Vector<T>::Vector(int capacity) {
 }
 
 template<typename T>
-inline Vector<T>::Vector(const Vector& other){
+Vector<T>::Vector(const Vector& other) {
 	copyFrom(other);
 }
 
 template<typename T>
-inline Vector<T>::Vector(Vector&& other){
+Vector<T>::Vector(Vector&& other) {
 	moveFrom(std::move(other));
 }
 
 template<typename T>
-inline Vector<T>& Vector<T>::operator=(const Vector& other){
+Vector<T>& Vector<T>::operator=(const Vector& other) {
 	if (this != &other) {
 		free();
 		copyFrom(other);
@@ -57,7 +57,7 @@ inline Vector<T>& Vector<T>::operator=(const Vector& other){
 }
 
 template<typename T>
-inline Vector<T>& Vector<T>::operator=(Vector&& other){
+Vector<T>& Vector<T>::operator=(Vector&& other) {
 	if (this != &other) {
 		free();
 		moveFrom(std::move(other));
@@ -66,12 +66,12 @@ inline Vector<T>& Vector<T>::operator=(Vector&& other){
 }
 
 template<typename T>
-inline Vector<T>::~Vector(){
+Vector<T>::~Vector() {
 	free();
 }
 
 template<typename T>
-inline void Vector<T>::AddElement(const T& obj){
+void Vector<T>::AddElement(const T& obj) {
 	if (count == capacity)
 		resize();
 
@@ -79,7 +79,7 @@ inline void Vector<T>::AddElement(const T& obj){
 }
 
 template<typename T>
-inline void Vector<T>::moveFrom(Vector&& other){
+void Vector<T>::moveFrom(Vector&& other) {
 	data = other.data;
 	capacity = other.capacity;
 	count = other.count;
@@ -97,12 +97,13 @@ void Vector<T>::copyFrom(const Vector& other) {
 }
 
 template<typename T>
-inline void Vector<T>::free(){
+void Vector<T>::free() {
 	delete[] data;
+	data = nullptr;
 }
 
 template<typename T>
-inline void Vector<T>::resize(){
+void Vector<T>::resize() {
 	capacity *= 2;
 	T* newData = new T[capacity];
 	for (int i = 0; i < count; i++)
