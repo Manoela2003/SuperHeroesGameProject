@@ -24,6 +24,9 @@ public:
 
 	unsigned GetCount() const;
 	void AddElement(const T& obj);
+	void RemoveElement(int index);
+	const T& operator[](int index) const;
+	T& operator[](int index);
 };
 
 template<typename T>
@@ -82,6 +85,32 @@ void Vector<T>::AddElement(const T& obj) {
 		resize();
 
 	data[count++] = obj;
+}
+
+template<typename T>
+void Vector<T>::RemoveElement(int index){
+	if (index < 0 || index >= count)
+		throw std::out_of_range("The index is out of range");
+	
+	for (int i = index; i < count - 1; i++)
+		data[i] = data[i + 1];
+	--count;
+}
+
+template<typename T>
+const T& Vector<T>::operator[](int index) const{
+	if (index < 0 || index >= count)
+		throw std::out_of_range("The index is out of range");
+
+	return data[index];
+}
+
+template<typename T>
+T& Vector<T>::operator[](int index){
+	if (index < 0 || index >= count)
+		throw std::out_of_range("The index is out of range");
+
+	return data[index];
 }
 
 template<typename T>
