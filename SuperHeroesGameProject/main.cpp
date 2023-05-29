@@ -104,7 +104,14 @@ void InputUser(char* firstName, char* lastName, char* username, char* password) 
 bool AddPlayer(SuperHeroesGame& game, char* firstName, char* lastName, char* username, char* password) {
 	InputUser(firstName, lastName, username, password);
 	try {
-		game.AddPlayer(firstName, lastName, username, password);
+		if (game.AddPlayer(firstName, lastName, username, password)) {
+			std::cout << "Player successfully added!" << std::endl;
+			return true;
+		}
+		else {
+			std::cout << "Only administrators can add new players!" << std::endl;
+			return false;
+		}
 	}
 	catch (std::invalid_argument& inv) {
 		std::cout << inv.what() << std::endl;
@@ -128,7 +135,14 @@ bool AddPlayer(SuperHeroesGame& game, char* firstName, char* lastName, char* use
 bool AddAdministrator(SuperHeroesGame& game, char* firstName, char* lastName, char* username, char* password) {
 	InputUser(firstName, lastName, username, password);
 	try {
-		game.AddAdministrator(firstName, lastName, username, password);
+		if (game.AddAdministrator(firstName, lastName, username, password)) {
+			std::cout << "Administrator successfully added!" << std::endl;
+			return true;
+		}
+		else {
+			std::cout << "Only administrators can add new ones!" << std::endl;
+			return false;
+		}
 	}
 	catch (std::invalid_argument& inv) {
 		std::cout << inv.what() << std::endl;
@@ -149,7 +163,7 @@ bool AddAdministrator(SuperHeroesGame& game, char* firstName, char* lastName, ch
 	return true;
 }
 
-void AddPlayerOrAdministrator(SuperHeroesGame& game) {
+bool AddPlayerOrAdministrator(SuperHeroesGame& game) {
 	std::cout << "1. Add Player" << std::endl;
 	std::cout << "2. Add Administrator" << std::endl;
 
@@ -164,12 +178,128 @@ void AddPlayerOrAdministrator(SuperHeroesGame& game) {
 
 	switch (command[0]) {
 	case '1':
-		AddPlayer(game, firstName, lastName, username, password);
+		if (!AddPlayer(game, firstName, lastName, username, password))
+			return false;
 		break;
 	case '2':
-		AddAdministrator(game, firstName, lastName, username, password);
+		if (!AddAdministrator(game, firstName, lastName, username, password))
+			return false;
 		break;
 	}
+	return true;
+}
+
+bool DeletePlayersProfile(SuperHeroesGame& game) {
+	char username[buffer_Max_Size];
+	std::cout << "Enter player's username: ";
+	std::cin >> username;
+
+	try {
+		if (game.DeletePlayer(username)) {
+			std::cout << username << " deleted successfully!" << std::endl;
+			return true;
+		}
+		else {
+			std::cout << "There is no player with such username!" << std::endl;
+			return false;
+		}
+	}
+	catch (std::invalid_argument& inv) {
+		std::cout << inv.what() << std::endl;
+		return false;
+	}
+	catch (std::logic_error& le) {
+		std::cout << le.what() << std::endl;
+		return false;
+	}
+	catch (std::exception& exc) {
+		std::cout << exc.what() << std::endl;
+		return false;
+	}
+	catch (...) {
+		std::cout << "Unknown error" << std::endl;
+		return false;
+	}
+}
+
+bool PrintAllPlayersInfo(const SuperHeroesGame& game) {
+	try {
+		game.PrintAllPlayers();
+	}
+	catch (std::logic_error& le) {
+		std::cout << le.what() << std::endl;
+		return false;
+	}
+	catch (std::exception& exc) {
+		std::cout << exc.what() << std::endl;
+		return false;
+	}
+	catch (...) {
+		std::cout << "Unknown error" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+bool PrintSpecificPlayerInfo(const SuperHeroesGame& game) {
+	std::cout << "Enter player's username: ";
+	char username[buffer_Max_Size];
+	std::cin >> username;
+	try {
+		if (!game.PrintSpecificPlayer(username)) {
+			std::cout << "There is no player with such username!" << std::endl;
+			return false;
+		}
+	}
+	catch (std::logic_error& le) {
+		std::cout << le.what() << std::endl;
+		return false;
+	}
+	catch (std::exception& exc) {
+		std::cout << exc.what() << std::endl;
+		return false;
+	}
+	catch (...) {
+		std::cout << "Unknown error" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+bool ShowInfoOfPlayer(const SuperHeroesGame& game) {
+	std::cout << "1. Show all players" << std::endl;
+	std::cout << "2. Show information about specific player" << std::endl;
+
+	char command[buffer_Max_Size];
+	std::cin.getline(command, buffer_Max_Size);
+	CheckCommand(command, '2');
+
+	switch (command[0]) {
+	case '1':
+		if (!PrintAllPlayersInfo(game))
+			return false;
+		break;
+
+	case '2':
+
+		break;
+	}
+}
+
+bool ShowInfoOfPlayerOrAdmin(const SuperHeroesGame& game) {
+	std::cout << "1. Show info about player" << std::endl;
+	std::cout << "2. Show info about administrator" << std::endl;
+
+	char command[buffer_Max_Size];
+	std::cin.getline(command, buffer_Max_Size);
+	CheckCommand(command, '2');
+
+	switch (command[0]) {
+	case '1':
+		if (!ShowInfoOfPlayer(game))
+			return false;
+	}
+
 }
 
 int main()
@@ -190,10 +320,17 @@ int main()
 
 				switch (command[0]) {
 				case '1':
-					AddPlayerOrAdministrator(game);
+					if (AddPlayerOrAdministrator(game))
+						isSuccessful = true;
 					break;
 				case '2':
-
+					if (DeletePlayersProfile(game))
+						isSuccessful = true;
+					break;
+				case '3':
+					if (ShowInfoOfPlayerOrAdmin(game))
+						isSuccessful = true;
+					break;
 				}
 			}
 
