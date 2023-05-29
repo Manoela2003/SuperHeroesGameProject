@@ -1,6 +1,13 @@
 #include "User.h"
 #include "HelperFunctions.h"
 
+User::User(const char* firstName, const char* lastName, const char* username, const char* password){
+	SetFirstName(firstName);
+	SetLastName(lastName);
+	SetUsername(username);
+	SetPassword(password);
+}
+
 User::User(const char* firstName, const char* lastName, const char* email, const char* username, const char* password) {
 	SetFirstName(firstName);
 	SetLastName(lastName);
@@ -28,8 +35,7 @@ void User::SetEmail(const char* email) {
 }
 
 void User::SetUsername(const char* username) {
-	if (!username)
-		throw std::invalid_argument("The username doesn't exist");
+	IsUsernameValid(username);
 
 	this->username = username;
 }
@@ -38,4 +44,8 @@ void User::SetPassword(const char* password) {
 	IsPasswordValid(password);
 
 	this->password = password;
+}
+
+bool User::IsEmailEmpty() const{
+	return email[0] == '\0';
 }

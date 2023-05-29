@@ -11,6 +11,7 @@ protected:
 
 public:
 	User() = default;
+	User(const char* firstName, const char* lastName, const char* username, const char* password);
 	User(const char* firstName, const char* lastName, const char* email, const char* username, const char* password);
 
 	void SetFirstName(const char* name);
@@ -19,4 +20,7 @@ public:
 	void SetUsername(const char* username);
 	void SetPassword(const char* password);
 
+	virtual void PrintInfo() const = 0;
+
+	bool IsEmailEmpty() const;
 };
