@@ -3,10 +3,12 @@
 
 class Administrator : public User {
 public:
+	Administrator(const char* firstName, const char* lastName, const char* username, const char* password);
 	Administrator() = default;
 	Administrator(const char* firstName, const char* lastName, const char* email, const char* username, const char* password);
 
-	friend class SuperHeroesGame;
+	void PrintInfo() const override;
 
+	friend class SuperHeroesGame;
 };
 
