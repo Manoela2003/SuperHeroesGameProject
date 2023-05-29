@@ -281,9 +281,77 @@ bool ShowInfoOfPlayer(const SuperHeroesGame& game) {
 		break;
 
 	case '2':
-
+		if (!PrintSpecificPlayerInfo(game))
+			return false;
 		break;
 	}
+	return true;
+}
+
+bool PrintAllAdminsInfo(const SuperHeroesGame& game) {
+	try {
+		game.PrintAllAdmins();
+	}
+	catch (std::logic_error& le) {
+		std::cout << le.what() << std::endl;
+		return false;
+	}
+	catch (std::exception& exc) {
+		std::cout << exc.what() << std::endl;
+		return false;
+	}
+	catch (...) {
+		std::cout << "Unknown error" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+bool PrintSpecificAdminInfo(const SuperHeroesGame& game) {
+	std::cout << "Enter administrator's first name: ";
+	char firstName[buffer_Max_Size];
+	std::cin >> firstName;
+	try {
+		if (!game.PrintSpecificAdministrator(firstName)) {
+			std::cout << "There is no administrator with such username!" << std::endl;
+			return false;
+		}
+	}
+	catch (std::logic_error& le) {
+		std::cout << le.what() << std::endl;
+		return false;
+	}
+	catch (std::exception& exc) {
+		std::cout << exc.what() << std::endl;
+		return false;
+	}
+	catch (...) {
+		std::cout << "Unknown error" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+bool ShowInfoOfAdministrator(const SuperHeroesGame& game) {
+	std::cout << "Show all administrators" << std::endl;
+	std::cout << "Show information about specific administrator" << std::endl;
+
+	char command[buffer_Max_Size];
+	std::cin.getline(command, buffer_Max_Size);
+	CheckCommand(command, '2');
+
+	switch (command[0]) {
+	case '1':
+		if (!PrintAllAdminsInfo(game))
+			return false;
+		break;
+
+	case '2':
+		if (!PrintSpecificAdminInfo(game))
+			return false;
+		break;
+	}
+	return true;
 }
 
 bool ShowInfoOfPlayerOrAdmin(const SuperHeroesGame& game) {
@@ -298,8 +366,12 @@ bool ShowInfoOfPlayerOrAdmin(const SuperHeroesGame& game) {
 	case '1':
 		if (!ShowInfoOfPlayer(game))
 			return false;
-	}
 
+	case '2':
+		if (!ShowInfoOfAdministrator(game))
+			return false;
+	}
+	return true;
 }
 
 int main()
@@ -323,10 +395,12 @@ int main()
 					if (AddPlayerOrAdministrator(game))
 						isSuccessful = true;
 					break;
+
 				case '2':
 					if (DeletePlayersProfile(game))
 						isSuccessful = true;
 					break;
+
 				case '3':
 					if (ShowInfoOfPlayerOrAdmin(game))
 						isSuccessful = true;
@@ -337,4 +411,3 @@ int main()
 		}
 	}
 }
-
