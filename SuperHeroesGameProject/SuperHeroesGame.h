@@ -15,10 +15,16 @@ public:
 
 	bool LogInAsAdministrator(const char* username, const char* password) const;
 	bool LogInAsPlayer(const char* username, const char* password) const;
-	bool AddAdministrator(const Administrator& other);
-	bool AddPlayer(const Player& other);
+	bool AddAdministrator(const char* firstName, const char* lastName, const char* username, const char* password);
+	bool AddPlayer(const char* firstName, const char* lastName, const char* username, const char* password);
 	bool DeletePlayer(const char* username);
 	bool DeleteOwnProfile();
+	
+	void PrintAllPlayers() const;
+	bool PrintSpecificPlayer(const char* username) const;
+
+	void PrintAllAdmins() const;
+	bool PrintSpecificAdministrator(const char* firstName) const;
 
 	bool IsAdministratorLogged() const;
 	bool IsPlayerLogged() const;
