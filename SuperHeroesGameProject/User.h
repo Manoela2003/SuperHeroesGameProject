@@ -21,6 +21,6 @@ public:
 	void SetPassword(const char* password);
 
 	virtual void PrintInfo() const = 0;
-
+        // Add abstract destructor
 	bool IsEmailEmpty() const;
 };
