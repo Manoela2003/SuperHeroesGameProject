@@ -1,11 +1,14 @@
 #pragma once
 #include "Administrator.h"
 #include "Player.h"
+#include "Shop.h"
+#include "UniquePtr.hpp"
 
 class SuperHeroesGame {
 private:
 	Vector<SharedPtr<Administrator>> administrators;
 	Vector<SharedPtr<Player>> players;
+	UniquePtr<Shop> shop;
 
 	mutable unsigned IndexOfloggedInAdmin = -1;
 	mutable unsigned IndexOfloggedInPlayer = -1;
