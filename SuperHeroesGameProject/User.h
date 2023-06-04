@@ -21,6 +21,7 @@ public:
 	void SetPassword(const char* password);
 
 	virtual void PrintInfo() const = 0;
-
 	bool IsEmailEmpty() const;
+
+	virtual ~User() = default;
 };
