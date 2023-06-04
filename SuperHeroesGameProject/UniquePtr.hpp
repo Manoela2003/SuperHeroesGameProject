@@ -6,6 +6,7 @@ class UniquePtr {
 
 	void free();
 	void moveFrom(UniquePtr&& other);
+
 public:
 	UniquePtr(const T* data);
 	UniquePtr(const UniquePtr& other) = delete;
@@ -14,6 +15,8 @@ public:
 	UniquePtr<T>& operator=(UniquePtr&& other);
 	const T& operator*() const;
 	T& operator*();
+	const T* operator->() const;
+	T* operator->();
 	~UniquePtr();
 };
 
@@ -59,6 +62,16 @@ template<typename T>
 T& UniquePtr<T>::operator*(){
 	if (data != nullptr)
 		return *data;
+}
+
+template<typename T>
+const T* UniquePtr<T>::operator->() const{
+	return data;
+}
+
+template<typename T>
+T* UniquePtr<T>::operator->() {
+	return data;
 }
 
 template<typename T>
