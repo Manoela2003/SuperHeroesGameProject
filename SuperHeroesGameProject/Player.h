@@ -14,6 +14,9 @@ public:
 	Player(const char* firstName, const char* lastName, const char* username, const char* password);
 	Player(const char* firstName, const char* lastName, const char* email, const char* username, const char* password);
 
+	void PrintBalance() const;
+	void PrintHeroes() const;
+
 	void PrintInfo() const override;
 	friend class SuperHeroesGame;
 };
