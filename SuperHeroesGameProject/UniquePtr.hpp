@@ -8,7 +8,7 @@ class UniquePtr {
 	void moveFrom(UniquePtr&& other);
 
 public:
-	UniquePtr(const T* data);
+	UniquePtr(T* data);
 	UniquePtr(const UniquePtr& other) = delete;
 	UniquePtr<T>& operator=(const UniquePtr& other) = delete;
 	UniquePtr(UniquePtr&& other);
@@ -33,7 +33,7 @@ void UniquePtr<T>::moveFrom(UniquePtr&& other) {
 }
 
 template<typename T>
-UniquePtr<T>::UniquePtr(const T* data) {
+UniquePtr<T>::UniquePtr(T* data) {
 	if (data != nullptr)
 		this->data = data;
 }
