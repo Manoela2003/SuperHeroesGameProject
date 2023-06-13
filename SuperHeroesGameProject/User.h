@@ -20,6 +20,9 @@ public:
 	void SetUsername(const char* username);
 	void SetPassword(const char* password);
 
+	void PrintName() const;
+	void PrintEmail() const;
+	void PrintUsername() const;
 	virtual void PrintInfo() const = 0;
 	bool IsEmailEmpty() const;
 

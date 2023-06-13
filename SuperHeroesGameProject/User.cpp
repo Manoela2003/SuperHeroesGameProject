@@ -1,7 +1,7 @@
 #include "User.h"
 #include "HelperFunctions.h"
 
-User::User(const char* firstName, const char* lastName, const char* username, const char* password){
+User::User(const char* firstName, const char* lastName, const char* username, const char* password) {
 	SetFirstName(firstName);
 	SetLastName(lastName);
 	SetUsername(username);
@@ -46,6 +46,22 @@ void User::SetPassword(const char* password) {
 	this->password = password;
 }
 
-bool User::IsEmailEmpty() const{
+void User::PrintName() const {
+	std::cout << "Name: " << firstName << ' ' << lastName << std::endl;
+}
+
+void User::PrintEmail() const {
+	std::cout << "Email: ";
+	if (IsEmailEmpty())
+		std::cout << "'email not set'" << std::endl;
+	else
+		std::cout << email << std::endl;
+}
+
+void User::PrintUsername() const{
+	std::cout << "Username: " << username << std::endl;
+}
+
+bool User::IsEmailEmpty() const {
 	return email[0] == '\0';
 }
