@@ -113,14 +113,6 @@ bool AddPlayer(SuperHeroesGame& game, char* firstName, char* lastName, char* use
 			return false;
 		}
 	}
-	catch (std::invalid_argument& inv) {
-		std::cout << inv.what() << std::endl;
-		return false;
-	}
-	catch (std::logic_error& le) {
-		std::cout << le.what() << std::endl;
-		return false;
-	}
 	catch (std::exception& exc) {
 		std::cout << exc.what() << std::endl;
 		return false;
@@ -143,14 +135,6 @@ bool AddAdministrator(SuperHeroesGame& game, char* firstName, char* lastName, ch
 			std::cout << "Only administrators can add new ones!" << std::endl;
 			return false;
 		}
-	}
-	catch (std::invalid_argument& inv) {
-		std::cout << inv.what() << std::endl;
-		return false;
-	}
-	catch (std::logic_error& le) {
-		std::cout << le.what() << std::endl;
-		return false;
 	}
 	catch (std::exception& exc) {
 		std::cout << exc.what() << std::endl;
@@ -374,19 +358,74 @@ bool ShowInfoOfPlayerOrAdmin(const SuperHeroesGame& game) {
 	return true;
 }
 
+void InputHero(char* firstName, char* lastName, char* nickname, char* power, int strength, double price) {
+	std::cout << "Enter name: ";
+	std::cin >> firstName, lastName;
+	std::cout << "Enter nickname: ";
+	std::cin >> nickname;
+	std::cout << "Enter type of power: ";
+	std::cin >> power;
+	std::cout << "Enter strength: ";
+	std::cin >> strength;
+	std::cout << "Enter price: ";
+	std::cin >> price;
+}
+
+bool AddHeroToTheShop(SuperHeroesGame& game) {
+	char firstName[buffer_Max_Size], lastName[buffer_Max_Size], nickname[buffer_Max_Size], power[buffer_Max_Size];
+	int strength = 0;
+	double price = 0;
+	InputHero(firstName, lastName, nickname, power, strength, price);
+	try {
+		if (game.AddSuperHero(firstName, lastName, nickname, power, strength, price)) {
+			std::cout << "Hero successfully added!" << std::endl;
+			return true;
+		}
+		else {
+			std::cout << "Only administrators can add new heroes!" << std::endl;
+			return false;
+		}
+	}
+	catch (std::exception& exc) {
+		std::cout << exc.what() << std::endl;
+		return false;
+	}
+	catch (...) {
+		std::cout << "Unknown error!" << std::endl;
+		return false;
+	}
+	return true;
+
+}
+
+void PrintPlayerOptions() {
+	std::cout << "~~~Player Menu~~~" << std::endl;
+	std::cout << "1. Print other players' info" << std::endl;
+	std::cout << "2. Print the ranking" << std::endl;
+	std::cout << "3. Visit the shop" << std::endl;
+	std::cout << "4. Attack a super hero" << std::endl;
+	std::cout << "5. Change position of super hero" << std::endl;
+	std::cout << "6. Delete your account" << std::endl;
+	std::cout << "7. Log out" << std::endl;
+}
+
 int main()
 {
 	SuperHeroesGame game;
 	game.AddAdministrator("Mebg", "Ewgewg", "aannitoo", "Aniichka@1");
 	while (HasLoggedIn(game)) {
+		bool isSuccessful = false;
+		char command[buffer_Max_Size];
 		if (game.IsPlayerLogged()) {
+			while (!isSuccessful) {
+				PrintPlayerOptions();
 
+			}
 		}
 		else if (game.IsAdministratorLogged()) {
-			bool isSuccessful = false;
 			while (!isSuccessful) {
 				PrintAdministratorOptions();
-				char command[buffer_Max_Size];
+
 				std::cin.getline(command, buffer_Max_Size);
 				CheckCommand(command, '5');
 
@@ -405,9 +444,24 @@ int main()
 					if (ShowInfoOfPlayerOrAdmin(game))
 						isSuccessful = true;
 					break;
+
+				case '4':
+					if (AddHeroToTheShop(game))
+						isSuccessful = true;
+					break;
+
+				case '5':
+					try {
+						game.LogOut();
+						isSuccessful = true;
+						std::cout << "Logging out..." << std::endl;
+					}
+					catch (std::logic_error& le) {
+						std::cout << le.what() << std::endl;
+					}
+					break;
 				}
 			}
-
 		}
 	}
 }
