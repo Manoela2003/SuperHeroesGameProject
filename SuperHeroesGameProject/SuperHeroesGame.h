@@ -8,10 +8,10 @@ class SuperHeroesGame {
 private:
 	Vector<SharedPtr<Administrator>> administrators;
 	Vector<SharedPtr<Player>> players;
-	UniquePtr<Shop> shop;
+	UniquePtr<Shop> shop = new Shop();
 
-	mutable unsigned IndexOfloggedInAdmin = -1;
-	mutable unsigned IndexOfloggedInPlayer = -1;
+	mutable int IndexOfloggedInAdmin = -1;
+	mutable int IndexOfloggedInPlayer = -1;
 
 public:
 	SuperHeroesGame() = default;
@@ -22,6 +22,7 @@ public:
 	bool AddPlayer(const char* firstName, const char* lastName, const char* username, const char* password);
 	bool DeletePlayer(const char* username);
 	bool DeleteOwnProfile();
+	bool AddSuperHero(const char* firstName, const char* lastName, const char* nickname, const char* power, int strength, double price);
 	
 	void PrintAllPlayers() const;
 	bool PrintSpecificPlayer(const char* username) const;
@@ -31,5 +32,9 @@ public:
 
 	bool IsAdministratorLogged() const;
 	bool IsPlayerLogged() const;
+
+	void PrintOtherPlayersInfo() const;
+
+	void LogOut() const;
 };
 

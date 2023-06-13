@@ -15,7 +15,7 @@ bool SuperHeroesGame::LogInAsAdministrator(const char* username, const char* pas
 	return false;
 }
 
-bool SuperHeroesGame::LogInAsPlayer(const char* username, const char* password) const{
+bool SuperHeroesGame::LogInAsPlayer(const char* username, const char* password) const {
 	if (!username || !password)
 		throw std::invalid_argument("The username or password doesn't exist");
 
@@ -71,7 +71,15 @@ bool SuperHeroesGame::DeleteOwnProfile() {
 	return false;
 }
 
-void SuperHeroesGame::PrintAllPlayers() const{
+bool SuperHeroesGame::AddSuperHero(const char* firstName, const char* lastName, const char* nickname, const char* power, int strength, double price) {
+	if (IndexOfloggedInAdmin != -1) {
+		shop->AddNewSuperHero(firstName, lastName, nickname, power, strength, price);
+		return true;
+	}
+	return false;
+}
+
+void SuperHeroesGame::PrintAllPlayers() const {
 	if (IndexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
@@ -80,7 +88,7 @@ void SuperHeroesGame::PrintAllPlayers() const{
 	}
 }
 
-bool SuperHeroesGame::PrintSpecificPlayer(const char* username) const{
+bool SuperHeroesGame::PrintSpecificPlayer(const char* username) const {
 	if (IndexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
@@ -93,8 +101,8 @@ bool SuperHeroesGame::PrintSpecificPlayer(const char* username) const{
 	return false;
 }
 
-void SuperHeroesGame::PrintAllAdmins() const{
-	if(IndexOfloggedInAdmin == -1)
+void SuperHeroesGame::PrintAllAdmins() const {
+	if (IndexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
 	for (int i = 0; i < administrators.GetCount(); i++) {
@@ -102,7 +110,7 @@ void SuperHeroesGame::PrintAllAdmins() const{
 	}
 }
 
-bool SuperHeroesGame::PrintSpecificAdministrator(const char* firstName) const{
+bool SuperHeroesGame::PrintSpecificAdministrator(const char* firstName) const {
 	if (IndexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
@@ -115,10 +123,28 @@ bool SuperHeroesGame::PrintSpecificAdministrator(const char* firstName) const{
 	return false;
 }
 
-bool SuperHeroesGame::IsAdministratorLogged() const{
+bool SuperHeroesGame::IsAdministratorLogged() const {
 	return IndexOfloggedInAdmin != -1;
 }
 
-bool SuperHeroesGame::IsPlayerLogged() const{
+bool SuperHeroesGame::IsPlayerLogged() const {
 	return IndexOfloggedInPlayer != -1;
+}
+
+void SuperHeroesGame::PrintOtherPlayersInfo() const{
+	for (int i = 0; i < players.GetCount(); i++) {
+		if (i == IndexOfloggedInPlayer)
+			continue;
+		std::cout << i + 1 << ". ";
+		players[i]->PrintUsername();
+		players[i]->PrintBalance();
+		players[i]->PrintHeroes();
+	}
+}
+
+void SuperHeroesGame::LogOut() const{
+	if (IndexOfloggedInAdmin == -1 && IndexOfloggedInPlayer == -1)
+		throw std::logic_error("You are not logged in");
+
+	IndexOfloggedInAdmin = IndexOfloggedInPlayer = -1;
 }
