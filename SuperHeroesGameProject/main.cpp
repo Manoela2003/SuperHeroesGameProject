@@ -411,11 +411,16 @@ void PrintPlayerOptions() {
 }
 
 void VisitShop(SuperHeroesGame& game) {
-	game.PrintShop();
+	if (!game.PrintShop()) {
+		std::cout << "The shop is empty" << std::endl;
+		return;
+	}
+
 	std::cout << "If you want to go to the main menu type 'back'" << std::endl;
 	std::cout << "Enter Superhero name you wish to buy: ";
 
 	char input[buffer_Max_Size];
+	std::cin.getline(input, buffer_Max_Size);
 	if (!strcmp(input, "back"))
 		return;
 
@@ -425,6 +430,43 @@ void VisitShop(SuperHeroesGame& game) {
 	}
 	else {
 		std::cout << "Insufficent balance" << std::endl;
+	}
+}
+
+void AttackSuperHero(SuperHeroesGame& game) {
+	game.PrintOtherPlayersInfo();
+	std::cout << "Enter username of a player you wish to attack: ";
+	char username[buffer_Max_Size];
+	std::cin.getline(username, buffer_Max_Size);
+
+	int playerIndex = game.IndexOfPlayer(username);
+	if (playerIndex != -1) {
+		std::cout << "Enter Superhero you want to use for the attack: ";
+		char hero[buffer_Max_Size];
+		std::cin.getline(hero, buffer_Max_Size);
+		int indexOfAttacker = game.IndexOfSuperHero(hero);
+
+		if (indexOfAttacker == -1) {
+			std::cout << "There is no such Superhero" << std::endl;
+			return;
+		}
+
+		std::cout << "Enter Superhero you want to attack: ";
+		std::cin.getline(hero, buffer_Max_Size);
+		int indexOfAttacked = game.IndexOfSuperHero(hero, playerIndex);
+
+		if (indexOfAttacked == -1) {
+			std::cout << "There is no such Superhero" << std::endl;
+			return;
+		}
+
+		if (game.Attack(playerIndex, indexOfAttacker, indexOfAttacked))
+			std::cout << "You won!" << std::endl;
+		else
+			std::cout << "You lost!" << std::endl;
+	}
+	else {
+		std::cout << "There is no such player!" << std::endl;
 	}
 }
 
@@ -454,6 +496,11 @@ int main()
 
 				case '3':
 					VisitShop(game);
+					break;
+
+				case '4':
+					AttackSuperHero(game);
+					break;
 				}
 			}
 		}

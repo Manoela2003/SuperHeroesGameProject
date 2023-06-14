@@ -31,10 +31,13 @@ public:
 	bool IsAdministratorLogged() const;
 	bool IsPlayerLogged() const;
 	void PrintOtherPlayersInfo() const;
-	void PrintShop() const;
+	bool PrintShop() const;
 	void PrintPlayerBalance() const;
 
 	bool BuySuperHero(const char* nickname);
+	int IndexOfPlayer(const char* username) const;
+	int IndexOfSuperHero(const char* nickname, int playerIndex = -1) const;
+	bool Attack(int playerIndex, int attackerIndex, int attackedIndex);
 
 	void LogOut() const;
 };

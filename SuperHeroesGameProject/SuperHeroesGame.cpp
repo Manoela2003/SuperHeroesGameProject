@@ -1,4 +1,5 @@
 #include "SuperHeroesGame.h"
+#include <cmath>
 
 bool SuperHeroesGame::LogInAsAdministrator(const char* username, const char* password) const {
 	if (!username || !password)
@@ -142,8 +143,8 @@ void SuperHeroesGame::PrintOtherPlayersInfo() const {
 	}
 }
 
-void SuperHeroesGame::PrintShop() const {
-	shop->PrintSuperHeroes();
+bool SuperHeroesGame::PrintShop() const {
+	return shop->PrintSuperHeroes();
 }
 
 void SuperHeroesGame::PrintPlayerBalance() const {
@@ -164,6 +165,59 @@ bool SuperHeroesGame::BuySuperHero(const char* nickname) {
 	}
 
 	throw std::logic_error("You must be logged in to buy superHero");
+}
+
+int SuperHeroesGame::IndexOfPlayer(const char* username) const {
+	if (username == nullptr)
+		throw std::invalid_argument("The nickname doesn't exist");
+
+	for (int i = 0; i < players.GetCount(); i++) {
+		if (!strcmp(players[i]->username.c_str(), username))
+			return i;
+	}
+	return -1;
+}
+
+int SuperHeroesGame::IndexOfSuperHero(const char* nickname, int playerIndex) const {
+	if (playerIndex == -1)
+		playerIndex = indexOfloggedInPlayer;
+
+	return players[playerIndex]->IndexOfSuperHero(nickname);
+}
+
+bool SuperHeroesGame::Attack(int playerIndex, int attackerIndex, int attackedIndex) {
+	SharedPtr<SuperHero> attacker = players[indexOfloggedInPlayer]->GetSuperHero(attackerIndex);
+	SharedPtr<SuperHero> attacked = players[playerIndex]->GetSuperHero(attackedIndex);
+	int value = attacker->IsDominating(*attacked);
+	if (value == 1) {
+		attacker->SetStrength(2 * attacker->GetStrength());
+	}
+	else {
+		attacked->SetStrength(2 * attacked->GetStrength());
+	}
+
+	value = attacker->IsStrongerThan(*attacked);
+	switch (value) {
+		int difference = attacker->GetStrength() - attacked->GetStrength();
+	case 1:
+		if (attacked->GetPosition() == HeroPosition::Attack)
+			players[playerIndex]->LoseMoney(difference);
+
+		players[indexOfloggedInPlayer]->EarnMoney(difference);
+		players[playerIndex]->RemoveSuperHero(*attacked);
+		return true;
+		break;
+	case -1:
+		players[playerIndex]->EarnMoney(win_Defense_Money);
+		players[indexOfloggedInPlayer]->LoseMoney(abs(difference) * 2);
+		players[indexOfloggedInPlayer]->RemoveSuperHero(*attacker);
+		return false;
+		break;
+	case 0:
+		players[indexOfloggedInPlayer]->LoseMoney(lose_Attack_Money);
+		return false;
+		break;
+	}
 }
 
 void SuperHeroesGame::LogOut() const {

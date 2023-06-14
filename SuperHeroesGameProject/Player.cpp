@@ -31,6 +31,40 @@ bool Player::BuySuperHero(SuperHero& hero) {
 	return false;
 }
 
+int Player::IndexOfSuperHero(const char* nickname) const{
+	if (nickname == nullptr)
+		throw std::invalid_argument("The nickname doesn't exist");
+
+	for (int i = 0; i < heroes.GetCount(); i++) {
+		if (!strcmp(heroes[i]->GetNickname(), nickname))
+			return i;
+	}
+	return -1;
+}
+
+void Player::LoseMoney(unsigned amount){
+	balance -= amount;
+	if (balance < 0)
+		balance = 0;
+}
+
+void Player::EarnMoney(unsigned amount){
+	balance += amount;
+}
+
+SharedPtr<SuperHero> Player::GetSuperHero(int index) const{
+	return heroes[index];
+}
+
+void Player::RemoveSuperHero(const SuperHero& other){
+	for (int i = 0; i < heroes.GetCount(); i++) {
+		if (!strcmp(other.GetNickname(), heroes[i]->GetNickname())) {
+			heroes.RemoveElement(i);
+			return;
+		}
+	}
+}
+
 void Player::PrintInfo() const {
 	PrintName();
 	PrintEmail();

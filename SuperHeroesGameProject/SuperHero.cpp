@@ -38,6 +38,14 @@ double SuperHero::GetPrice() const{
 	return price;
 }
 
+unsigned SuperHero::GetStrength() const {
+	return strength;
+}
+
+HeroPosition SuperHero::GetPosition() const{
+	return position;
+}
+
 void SuperHero::SetFirstName(const char* name) {
 	IsNameValid(name);
 
@@ -109,4 +117,27 @@ void SuperHero::PrintDetailedInfo() const{
 void SuperHero::PrintUndetailedInfo() const {
 	std::cout << nickname << " - ";
 	PrintPower();
+}
+
+int SuperHero::IsDominating(const SuperHero& other) const{
+	if (power == HeroPower::Fire) {
+		return (other.power == HeroPower::Fire) ? 0 : 1;
+	}
+	else if (power == HeroPower::Earth) {
+		if (other.power == HeroPower::Water)
+			return 1;
+		return (other.power == HeroPower::Fire) ? -1 : 0;
+	}
+	else {
+		if (other.power == HeroPower::Fire)
+			return 1;
+		return (other.power == HeroPower::Earth) ? -1 : 0;
+	}
+}
+
+int SuperHero::IsStrongerThan(const SuperHero& other) const{
+	if (power > other.power)
+		return 1;
+
+	return (power < other.power) ? -1 : 0;
 }

@@ -30,6 +30,8 @@ public:
 
 	const char* GetNickname() const;
 	double GetPrice() const;
+	unsigned GetStrength() const;
+	HeroPosition GetPosition() const;
 
 	void SetFirstName(const char* name);
 	void SetLastName(const char* name);
@@ -42,5 +44,8 @@ public:
 	void PrintPower() const;
 	void PrintDetailedInfo() const;
 	void PrintUndetailedInfo() const;
-};
+
+	int IsDominating(const SuperHero& other) const;
+	int IsStrongerThan(const SuperHero& other) const;
+}; 
 
