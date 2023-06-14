@@ -220,6 +220,10 @@ bool SuperHeroesGame::Attack(int playerIndex, int attackerIndex, int attackedInd
 	}
 }
 
+int SuperHeroesGame::GetCountOfSuperHeroes(int playerIndex) const{
+	return players[playerIndex]->GetHeroesCount();
+}
+
 void SuperHeroesGame::LogOut() const {
 	if (indexOfloggedInAdmin == -1 && indexOfloggedInPlayer == -1)
 		throw std::logic_error("You are not logged in");

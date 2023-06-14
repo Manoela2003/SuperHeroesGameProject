@@ -1,5 +1,6 @@
 #include <iostream>
 #include "SuperHeroesGame.h"
+#include <stdlib.h>
 
 void PrintStartMenu() {
 	std::cout << "~~~~~MENU~~~~~" << std::endl;
@@ -441,10 +442,16 @@ void AttackSuperHero(SuperHeroesGame& game) {
 
 	int playerIndex = game.IndexOfPlayer(username);
 	if (playerIndex != -1) {
-		std::cout << "Enter Superhero you want to use for the attack: ";
+		std::cout << "Enter Superhero you want to use for the attack or type 'random': ";
 		char hero[buffer_Max_Size];
 		std::cin.getline(hero, buffer_Max_Size);
-		int indexOfAttacker = game.IndexOfSuperHero(hero);
+		int indexOfAttacker;
+		if (!strcmp(hero, "random")) {
+			srand(time(0));
+			indexOfAttacker = rand() % game.GetCountOfSuperHeroes(playerIndex);
+		}
+		else
+			indexOfAttacker = game.IndexOfSuperHero(hero);
 
 		if (indexOfAttacker == -1) {
 			std::cout << "There is no such Superhero" << std::endl;

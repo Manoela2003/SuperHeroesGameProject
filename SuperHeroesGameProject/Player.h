@@ -14,6 +14,8 @@ public:
 	Player(const char* firstName, const char* lastName, const char* username, const char* password);
 	Player(const char* firstName, const char* lastName, const char* email, const char* username, const char* password);
 
+	int GetHeroesCount() const;
+
 	void PrintBalance() const;
 	void PrintHeroes() const;
 	bool BuySuperHero(SuperHero& hero);

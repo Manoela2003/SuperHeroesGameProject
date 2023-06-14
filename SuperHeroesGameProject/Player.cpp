@@ -9,6 +9,10 @@ Player::Player(const char* firstName, const char* lastName, const char* username
 
 Player::Player(const char* firstName, const char* lastName, const char* email, const char* username, const char* password) : User(firstName, lastName, email, username, password) {}
 
+int Player::GetHeroesCount() const{
+	return heroes.GetCount();
+}
+
 void Player::PrintBalance() const {
 	std::cout << "Balance: " << balance << '$' << std::endl;
 }

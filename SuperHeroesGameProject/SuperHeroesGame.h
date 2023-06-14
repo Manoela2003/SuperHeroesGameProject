@@ -39,6 +39,8 @@ public:
 	int IndexOfSuperHero(const char* nickname, int playerIndex = -1) const;
 	bool Attack(int playerIndex, int attackerIndex, int attackedIndex);
 
+	int GetCountOfSuperHeroes(int playerIndex) const;
+
 	void LogOut() const;
 };
 
