@@ -1,4 +1,5 @@
 #include "Shop.h"
+#include "FileFunctions.h"
 
 static void PrintDashes(int dashesCount) {
 	for (int i = 0; i < dashesCount; i++)
@@ -43,4 +44,12 @@ SuperHero Shop::FindSuperHero(const char* nickname) const{
 	}
 
 	throw std::logic_error("There is no such SuperHero");
+}
+
+void Shop::ReadFromFile(const char* fileName){
+	ReadVector<SuperHero>(fileName, superHeroes);
+}
+
+void Shop::SaveToFile(const char* fileName) const{
+	SaveVector<SuperHero>(fileName, superHeroes);
 }

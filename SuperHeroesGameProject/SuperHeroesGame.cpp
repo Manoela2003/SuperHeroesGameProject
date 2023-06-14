@@ -1,5 +1,12 @@
 #include "SuperHeroesGame.h"
 #include <cmath>
+#include "FileFunctions.h"
+
+SuperHeroesGame::SuperHeroesGame(){
+	ReadVector<Administrator>(adminFile, administrators);
+	ReadVector<Player>(playerFile, players);
+	shop->ReadFromFile(shopFile);
+}
 
 bool SuperHeroesGame::LogInAsAdministrator(const char* username, const char* password) const {
 	if (!username || !password)
@@ -238,4 +245,10 @@ void SuperHeroesGame::LogOut() const {
 		throw std::logic_error("You are not logged in");
 
 	indexOfloggedInAdmin = indexOfloggedInPlayer = -1;
+}
+
+SuperHeroesGame::~SuperHeroesGame(){
+	SaveVector<Administrator>(adminFile, administrators);
+	SaveVector<Player>(playerFile, players);
+	shop->SaveToFile(shopFile);
 }
