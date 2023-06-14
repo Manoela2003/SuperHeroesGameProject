@@ -478,6 +478,16 @@ void AttackSuperHero(SuperHeroesGame& game) {
 	}
 }
 
+void ChangePositionOfSuperHero(SuperHeroesGame& game) {
+	std::cout << "Enter nickname of a Superhero you wish to change position: ";
+	char nickname[buffer_Max_Size];
+	std::cin.getline(nickname, buffer_Max_Size);
+	if (game.ChangePositionOfSuperHero(nickname))
+		std::cout << "Position changed successfully!" << std::endl;
+	else
+		std::cout << "There is no such Superhero!" << std::endl;
+}
+
 int main()
 {
 	SuperHeroesGame game;
@@ -508,6 +518,14 @@ int main()
 
 				case '4':
 					AttackSuperHero(game);
+					break;
+
+				case '5':
+					game.PrintPlayerBalance();
+					break;
+
+				case '6':
+					ChangePositionOfSuperHero(game);
 					break;
 				}
 			}

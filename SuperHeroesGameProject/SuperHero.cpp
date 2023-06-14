@@ -141,3 +141,10 @@ int SuperHero::IsStrongerThan(const SuperHero& other) const{
 
 	return (power < other.power) ? -1 : 0;
 }
+
+void SuperHero::ChangePosition(){
+	if (position == HeroPosition::Attack)
+		position = HeroPosition::Defense;
+	else
+		position = HeroPosition::Attack;
+}

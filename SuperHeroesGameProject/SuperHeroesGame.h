@@ -40,6 +40,7 @@ public:
 	bool Attack(int playerIndex, int attackerIndex, int attackedIndex);
 
 	int GetCountOfSuperHeroes(int playerIndex) const;
+	bool ChangePositionOfSuperHero(const char* nickname);
 
 	void LogOut() const;
 };

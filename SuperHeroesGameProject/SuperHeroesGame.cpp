@@ -181,7 +181,6 @@ int SuperHeroesGame::IndexOfPlayer(const char* username) const {
 int SuperHeroesGame::IndexOfSuperHero(const char* nickname, int playerIndex) const {
 	if (playerIndex == -1)
 		playerIndex = indexOfloggedInPlayer;
-
 	return players[playerIndex]->IndexOfSuperHero(nickname);
 }
 
@@ -222,6 +221,16 @@ bool SuperHeroesGame::Attack(int playerIndex, int attackerIndex, int attackedInd
 
 int SuperHeroesGame::GetCountOfSuperHeroes(int playerIndex) const{
 	return players[playerIndex]->GetHeroesCount();
+}
+
+bool SuperHeroesGame::ChangePositionOfSuperHero(const char* nickname){
+	int index = IndexOfSuperHero(nickname);
+
+	if (index == -1)
+		return false;
+
+	players[indexOfloggedInPlayer]->GetSuperHero(index)->ChangePosition();
+	return true;
 }
 
 void SuperHeroesGame::LogOut() const {

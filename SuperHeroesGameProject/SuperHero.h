@@ -47,5 +47,7 @@ public:
 
 	int IsDominating(const SuperHero& other) const;
 	int IsStrongerThan(const SuperHero& other) const;
+
+	void ChangePosition();
 }; 
 
