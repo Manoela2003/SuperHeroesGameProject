@@ -403,10 +403,29 @@ void PrintPlayerOptions() {
 	std::cout << "1. Print other players' info" << std::endl;
 	std::cout << "2. Print the ranking" << std::endl;
 	std::cout << "3. Visit the shop" << std::endl;
-	std::cout << "4. Attack a super hero" << std::endl;
-	std::cout << "5. Change position of super hero" << std::endl;
-	std::cout << "6. Delete your account" << std::endl;
-	std::cout << "7. Log out" << std::endl;
+	std::cout << "4. Attack a Superhero" << std::endl;
+	std::cout << "5. Show balance" << std::endl;
+	std::cout << "6. Change position of a Superhero" << std::endl;
+	std::cout << "7. Delete your account" << std::endl;
+	std::cout << "8. Log out" << std::endl;
+}
+
+void VisitShop(SuperHeroesGame& game) {
+	game.PrintShop();
+	std::cout << "If you want to go to the main menu type 'back'" << std::endl;
+	std::cout << "Enter Superhero name you wish to buy: ";
+
+	char input[buffer_Max_Size];
+	if (!strcmp(input, "back"))
+		return;
+
+	if (game.BuySuperHero(input)) {
+		std::cout << input << " bought successfully!" << std::endl;
+		game.PrintPlayerBalance();
+	}
+	else {
+		std::cout << "Insufficent balance" << std::endl;
+	}
 }
 
 int main()
@@ -417,15 +436,32 @@ int main()
 		bool isSuccessful = false;
 		char command[buffer_Max_Size];
 		if (game.IsPlayerLogged()) {
-			while (!isSuccessful) {
-				PrintPlayerOptions();
 
+			while (!isSuccessful) {
+
+				PrintPlayerOptions();
+				std::cin.getline(command, buffer_Max_Size);
+				CheckCommand(command, '8');
+
+				switch (command[0])
+				{
+				case '1':
+					game.PrintOtherPlayersInfo();
+					break;
+
+				case '2':
+					break;
+
+				case '3':
+					VisitShop(game);
+				}
 			}
 		}
 		else if (game.IsAdministratorLogged()) {
-			while (!isSuccessful) {
-				PrintAdministratorOptions();
 
+			while (!isSuccessful) {
+
+				PrintAdministratorOptions();
 				std::cin.getline(command, buffer_Max_Size);
 				CheckCommand(command, '5');
 

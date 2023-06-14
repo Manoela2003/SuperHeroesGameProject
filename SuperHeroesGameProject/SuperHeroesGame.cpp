@@ -7,7 +7,7 @@ bool SuperHeroesGame::LogInAsAdministrator(const char* username, const char* pas
 	for (int i = 0; i < administrators.GetCount(); i++) {
 		if (!strcmp(administrators[i]->username.c_str(), username)) {
 			if (!strcmp(administrators[i]->password.c_str(), password)) {
-				IndexOfloggedInAdmin = i;
+				indexOfloggedInAdmin = i;
 				return true;
 			}
 		}
@@ -22,7 +22,7 @@ bool SuperHeroesGame::LogInAsPlayer(const char* username, const char* password) 
 	for (int i = 0; i < players.GetCount(); i++) {
 		if (!strcmp(players[i]->username.c_str(), username)) {
 			if (!strcmp(players[i]->password.c_str(), password)) {
-				IndexOfloggedInPlayer = i;
+				indexOfloggedInPlayer = i;
 				return true;
 			}
 		}
@@ -31,7 +31,7 @@ bool SuperHeroesGame::LogInAsPlayer(const char* username, const char* password) 
 }
 
 bool SuperHeroesGame::AddAdministrator(const char* firstName, const char* lastName, const char* username, const char* password) {
-	if (IndexOfloggedInAdmin != -1) {
+	if (indexOfloggedInAdmin != -1) {
 		administrators.AddElement(new Administrator(firstName, lastName, username, password));
 		return true;
 	}
@@ -39,7 +39,7 @@ bool SuperHeroesGame::AddAdministrator(const char* firstName, const char* lastNa
 }
 
 bool SuperHeroesGame::AddPlayer(const char* firstName, const char* lastName, const char* username, const char* password) {
-	if (IndexOfloggedInAdmin != -1) {
+	if (indexOfloggedInAdmin != -1) {
 		players.AddElement(new Player(firstName, lastName, username, password));
 		return true;
 	}
@@ -50,7 +50,7 @@ bool SuperHeroesGame::DeletePlayer(const char* username) {
 	if (!username)
 		throw std::invalid_argument("The username doesn't exist");
 
-	if (IndexOfloggedInAdmin == -1)
+	if (indexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can delete players!");
 
 	for (int i = 0; i < players.GetCount(); i++) {
@@ -63,16 +63,16 @@ bool SuperHeroesGame::DeletePlayer(const char* username) {
 }
 
 bool SuperHeroesGame::DeleteOwnProfile() {
-	if (IndexOfloggedInPlayer != -1) {
-		players.RemoveElement(IndexOfloggedInPlayer);
-		IndexOfloggedInPlayer = -1;
+	if (indexOfloggedInPlayer != -1) {
+		players.RemoveElement(indexOfloggedInPlayer);
+		indexOfloggedInPlayer = -1;
 		return true;
 	}
 	return false;
 }
 
 bool SuperHeroesGame::AddSuperHero(const char* firstName, const char* lastName, const char* nickname, const char* power, int strength, double price) {
-	if (IndexOfloggedInAdmin != -1) {
+	if (indexOfloggedInAdmin != -1) {
 		shop->AddNewSuperHero(firstName, lastName, nickname, power, strength, price);
 		return true;
 	}
@@ -80,7 +80,7 @@ bool SuperHeroesGame::AddSuperHero(const char* firstName, const char* lastName, 
 }
 
 void SuperHeroesGame::PrintAllPlayers() const {
-	if (IndexOfloggedInAdmin == -1)
+	if (indexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
 	for (int i = 0; i < players.GetCount(); i++) {
@@ -89,7 +89,7 @@ void SuperHeroesGame::PrintAllPlayers() const {
 }
 
 bool SuperHeroesGame::PrintSpecificPlayer(const char* username) const {
-	if (IndexOfloggedInAdmin == -1)
+	if (indexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
 	for (int i = 0; i < players.GetCount(); i++) {
@@ -102,7 +102,7 @@ bool SuperHeroesGame::PrintSpecificPlayer(const char* username) const {
 }
 
 void SuperHeroesGame::PrintAllAdmins() const {
-	if (IndexOfloggedInAdmin == -1)
+	if (indexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
 	for (int i = 0; i < administrators.GetCount(); i++) {
@@ -111,7 +111,7 @@ void SuperHeroesGame::PrintAllAdmins() const {
 }
 
 bool SuperHeroesGame::PrintSpecificAdministrator(const char* firstName) const {
-	if (IndexOfloggedInAdmin == -1)
+	if (indexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
 	for (int i = 0; i < administrators.GetCount(); i++) {
@@ -124,16 +124,16 @@ bool SuperHeroesGame::PrintSpecificAdministrator(const char* firstName) const {
 }
 
 bool SuperHeroesGame::IsAdministratorLogged() const {
-	return IndexOfloggedInAdmin != -1;
+	return indexOfloggedInAdmin != -1;
 }
 
 bool SuperHeroesGame::IsPlayerLogged() const {
-	return IndexOfloggedInPlayer != -1;
+	return indexOfloggedInPlayer != -1;
 }
 
-void SuperHeroesGame::PrintOtherPlayersInfo() const{
+void SuperHeroesGame::PrintOtherPlayersInfo() const {
 	for (int i = 0; i < players.GetCount(); i++) {
-		if (i == IndexOfloggedInPlayer)
+		if (i == indexOfloggedInPlayer)
 			continue;
 		std::cout << i + 1 << ". ";
 		players[i]->PrintUsername();
@@ -142,9 +142,33 @@ void SuperHeroesGame::PrintOtherPlayersInfo() const{
 	}
 }
 
-void SuperHeroesGame::LogOut() const{
-	if (IndexOfloggedInAdmin == -1 && IndexOfloggedInPlayer == -1)
+void SuperHeroesGame::PrintShop() const {
+	shop->PrintSuperHeroes();
+}
+
+void SuperHeroesGame::PrintPlayerBalance() const {
+	if (indexOfloggedInPlayer != -1)
+		players[indexOfloggedInPlayer]->PrintBalance();
+	else
+		throw std::logic_error("You must be logged in first");
+}
+
+bool SuperHeroesGame::BuySuperHero(const char* nickname) {
+	if (indexOfloggedInPlayer != -1) {
+		SuperHero temp = shop->FindSuperHero(nickname);
+		if (players[indexOfloggedInPlayer]->BuySuperHero(temp)) {
+			shop->RemoveSuperHero(temp);
+			return true;
+		}
+		return false;
+	}
+
+	throw std::logic_error("You must be logged in to buy superHero");
+}
+
+void SuperHeroesGame::LogOut() const {
+	if (indexOfloggedInAdmin == -1 && indexOfloggedInPlayer == -1)
 		throw std::logic_error("You are not logged in");
 
-	IndexOfloggedInAdmin = IndexOfloggedInPlayer = -1;
+	indexOfloggedInAdmin = indexOfloggedInPlayer = -1;
 }

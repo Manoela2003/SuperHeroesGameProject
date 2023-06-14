@@ -10,8 +10,8 @@ private:
 	Vector<SharedPtr<Player>> players;
 	UniquePtr<Shop> shop = new Shop();
 
-	mutable int IndexOfloggedInAdmin = -1;
-	mutable int IndexOfloggedInPlayer = -1;
+	mutable int indexOfloggedInAdmin = -1;
+	mutable int indexOfloggedInPlayer = -1;
 
 public:
 	SuperHeroesGame() = default;
@@ -26,14 +26,15 @@ public:
 	
 	void PrintAllPlayers() const;
 	bool PrintSpecificPlayer(const char* username) const;
-
 	void PrintAllAdmins() const;
 	bool PrintSpecificAdministrator(const char* firstName) const;
-
 	bool IsAdministratorLogged() const;
 	bool IsPlayerLogged() const;
-
 	void PrintOtherPlayersInfo() const;
+	void PrintShop() const;
+	void PrintPlayerBalance() const;
+
+	bool BuySuperHero(const char* nickname);
 
 	void LogOut() const;
 };

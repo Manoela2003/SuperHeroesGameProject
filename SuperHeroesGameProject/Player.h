@@ -16,6 +16,7 @@ public:
 
 	void PrintBalance() const;
 	void PrintHeroes() const;
+	bool BuySuperHero(SuperHero& hero);
 
 	void PrintInfo() const override;
 	friend class SuperHeroesGame;

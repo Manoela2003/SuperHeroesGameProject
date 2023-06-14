@@ -25,6 +25,11 @@ private:
 public:
 	SuperHero() = default;
 	SuperHero(const char* firstName, const char* lastName, const char* nickname, const char* power, int strength, double price);
+	SuperHero(SuperHero&& obj);
+	SuperHero(const SuperHero& other);
+
+	const char* GetNickname() const;
+	double GetPrice() const;
 
 	void SetFirstName(const char* name);
 	void SetLastName(const char* name);
@@ -35,6 +40,7 @@ public:
 	void SetHeroPosition(HeroPosition position);
 
 	void PrintPower() const;
-	void PrintSuperHero() const;
+	void PrintDetailedInfo() const;
+	void PrintUndetailedInfo() const;
 };
 

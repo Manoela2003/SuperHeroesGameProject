@@ -10,6 +10,34 @@ SuperHero::SuperHero(const char* firstName, const char* lastName, const char* ni
 	SetPrice(price);
 }
 
+SuperHero::SuperHero(SuperHero&& obj){
+	firstName = std::move(obj.firstName);
+	lastName = std::move(obj.lastName);
+	nickname = std::move(obj.nickname);
+	power = obj.power;
+	strength = obj.strength;
+	price = obj.price;
+	position = obj.position;
+}
+
+SuperHero::SuperHero(const SuperHero& other){
+	firstName = other.firstName;
+	lastName = other.lastName;
+	nickname = other.nickname;
+	power = other.power;
+	strength = other.strength;
+	price = other.price;
+	position = other.position;
+}
+
+const char* SuperHero::GetNickname() const{
+	return nickname.c_str();
+}
+
+double SuperHero::GetPrice() const{
+	return price;
+}
+
 void SuperHero::SetFirstName(const char* name) {
 	IsNameValid(name);
 
@@ -70,7 +98,15 @@ void SuperHero::PrintPower() const {
 		std::cout << "Water" << std::endl;
 }
 
-void SuperHero::PrintSuperHero() const {
+void SuperHero::PrintDetailedInfo() const{
+	std::cout << "Name: " << firstName << ' ' << lastName << std::endl;
+	std::cout << "Price: " << price << '$' << std::endl;
+	std::cout << "Type: ";
+	PrintPower();
+	std::cout << "Strength: " << strength << std::endl;
+}
+
+void SuperHero::PrintUndetailedInfo() const {
 	std::cout << nickname << " - ";
 	PrintPower();
 }
