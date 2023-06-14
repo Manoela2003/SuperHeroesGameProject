@@ -84,9 +84,8 @@ void SuperHeroesGame::PrintAllPlayers() const {
 	if (indexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
-	for (int i = 0; i < players.GetCount(); i++) {
+	for (int i = 0; i < players.GetCount(); i++)
 		players[i]->PrintInfo();
-	}
 }
 
 bool SuperHeroesGame::PrintSpecificPlayer(const char* username) const {
@@ -106,9 +105,8 @@ void SuperHeroesGame::PrintAllAdmins() const {
 	if (indexOfloggedInAdmin == -1)
 		throw std::logic_error("Only administrators can have such information!");
 
-	for (int i = 0; i < administrators.GetCount(); i++) {
+	for (int i = 0; i < administrators.GetCount(); i++)
 		administrators[i]->PrintInfo();
-	}
 }
 
 bool SuperHeroesGame::PrintSpecificAdministrator(const char* firstName) const {
@@ -181,6 +179,7 @@ int SuperHeroesGame::IndexOfPlayer(const char* username) const {
 int SuperHeroesGame::IndexOfSuperHero(const char* nickname, int playerIndex) const {
 	if (playerIndex == -1)
 		playerIndex = indexOfloggedInPlayer;
+
 	return players[playerIndex]->IndexOfSuperHero(nickname);
 }
 
@@ -188,6 +187,7 @@ bool SuperHeroesGame::Attack(int playerIndex, int attackerIndex, int attackedInd
 	SharedPtr<SuperHero> attacker = players[indexOfloggedInPlayer]->GetSuperHero(attackerIndex);
 	SharedPtr<SuperHero> attacked = players[playerIndex]->GetSuperHero(attackedIndex);
 	int value = attacker->IsDominating(*attacked);
+
 	if (value == 1) {
 		attacker->SetStrength(2 * attacker->GetStrength());
 	}
@@ -196,8 +196,8 @@ bool SuperHeroesGame::Attack(int playerIndex, int attackerIndex, int attackedInd
 	}
 
 	value = attacker->IsStrongerThan(*attacked);
+	int difference = attacker->GetStrength() - attacked->GetStrength();
 	switch (value) {
-		int difference = attacker->GetStrength() - attacked->GetStrength();
 	case 1:
 		if (attacked->GetPosition() == HeroPosition::Attack)
 			players[playerIndex]->LoseMoney(difference);
@@ -219,11 +219,11 @@ bool SuperHeroesGame::Attack(int playerIndex, int attackerIndex, int attackedInd
 	}
 }
 
-int SuperHeroesGame::GetCountOfSuperHeroes(int playerIndex) const{
+int SuperHeroesGame::GetCountOfSuperHeroes(int playerIndex) const {
 	return players[playerIndex]->GetHeroesCount();
 }
 
-bool SuperHeroesGame::ChangePositionOfSuperHero(const char* nickname){
+bool SuperHeroesGame::ChangePositionOfSuperHero(const char* nickname) {
 	int index = IndexOfSuperHero(nickname);
 
 	if (index == -1)
