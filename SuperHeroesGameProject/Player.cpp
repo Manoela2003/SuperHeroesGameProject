@@ -18,17 +18,20 @@ void Player::PrintBalance() const {
 }
 
 void Player::PrintHeroes() const {
+	if (heroes.GetCount() == 0)
+		std::cout << "No Heroes" << std::endl;
+
 	std::cout << "Heroes: " << std::endl;
 	for (int i = 0; i < heroes.GetCount(); i++) {
-		PrintSpaces(15);
+		PrintSpaces(6);
 		std::cout << i + 1 << ". ";
 		heroes[i]->PrintUndetailedInfo();
 	}
 }
 
-bool Player::BuySuperHero(SuperHero& hero) {
+bool Player::BuySuperHero(const SuperHero& hero) {
 	if (balance >= hero.GetPrice()) {
-		heroes.AddElement(new SuperHero(std::move(hero)));
+		heroes.AddElement(new SuperHero(hero));
 		balance -= hero.GetPrice();
 		return true;
 	}
@@ -69,8 +72,14 @@ void Player::RemoveSuperHero(const SuperHero& other){
 	}
 }
 
+void Player::SaveToFile(std::ofstream& file) const{
+	file << username << ' ' << balance << '$' << std::endl;
+}
+
 void Player::PrintInfo() const {
 	PrintName();
 	PrintEmail();
 	PrintUsername();
+	PrintBalance();
+	PrintHeroes();
 }

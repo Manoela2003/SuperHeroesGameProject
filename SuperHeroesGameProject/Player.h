@@ -19,13 +19,14 @@ public:
 
 	void PrintBalance() const;
 	void PrintHeroes() const;
-	bool BuySuperHero(SuperHero& hero);
+	bool BuySuperHero(const SuperHero& hero);
 	int IndexOfSuperHero(const char* nickname) const;
 	void LoseMoney(unsigned amount);
 	void EarnMoney(unsigned amount);
 	SharedPtr<SuperHero> GetSuperHero(int index) const;
 
 	void RemoveSuperHero(const SuperHero& other);
+	void SaveToFile(std::ofstream& file) const;
 
 	void PrintInfo() const override;
 	friend class SuperHeroesGame;
