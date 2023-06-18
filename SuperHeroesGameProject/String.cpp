@@ -63,7 +63,7 @@ void String::free()
 	_data = nullptr;
 }
 
-void String::moveFrom(String&& other){
+void String::moveFrom(String&& other) {
 	_data = other._data;
 	other._data = nullptr;
 	_length = other._length;
@@ -127,6 +127,16 @@ String String::substr(size_t begin, size_t howMany) const
 const char* String::c_str() const
 {
 	return _data;
+}
+
+void String::ReadFromFile(std::ifstream& file){
+	file.read((char*)&_length, sizeof(_length));
+	file.read((char*)_data, _length + 1);
+}
+
+void String::SaveToFile(std::ofstream& file) const{
+	file.write((const char*)&_length, sizeof(_length));
+	file.write((const char*)_data, _length + 1);
 }
 
 std::ostream& operator<<(std::ostream& os, const String& str)

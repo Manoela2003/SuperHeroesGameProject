@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 
 class String // from lectures
 {
@@ -31,6 +32,9 @@ public:
 	char operator[](size_t index) const;
 
 	const char* c_str() const;
+
+	void ReadFromFile(std::ifstream& file);
+	void SaveToFile(std::ofstream& file) const;
 
 	friend String operator+(const String& lhs, const String& rhs);
 	friend std::istream& operator>>(std::istream& is, String& str);
