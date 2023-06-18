@@ -27,11 +27,11 @@ void AdministratorLogIn(const SuperHeroesGame& game, bool& isLoggedIn) {
 		}
 		else
 			std::cout << "Wrong username or password!" << std::endl;
-		std::cin.ignore();
 	}
 	catch (std::invalid_argument& arg) {
 		std::cout << arg.what() << std::endl;
 	}
+	std::cin.ignore();
 }
 
 void PlayerLogIn(const SuperHeroesGame& game, bool& isLoggedIn) {
@@ -49,6 +49,7 @@ void PlayerLogIn(const SuperHeroesGame& game, bool& isLoggedIn) {
 	catch (std::invalid_argument& arg) {
 		std::cout << arg.what() << std::endl;
 	}
+	std::cin.ignore();
 }
 
 void CheckCommand(char* command, char lastOption) {
@@ -357,9 +358,10 @@ void PrintPlayerOptions() {
 	std::cout << "3. Visit the shop" << std::endl;
 	std::cout << "4. Attack a Superhero" << std::endl;
 	std::cout << "5. Show balance" << std::endl;
-	std::cout << "6. Change position of a Superhero" << std::endl;
-	std::cout << "7. Delete your account" << std::endl;
-	std::cout << "8. Log out" << std::endl;
+	std::cout << "6. Show your Superheroes" << std::endl;
+	std::cout << "7. Change position of a Superhero" << std::endl;
+	std::cout << "8. Delete your account" << std::endl;
+	std::cout << "9. Log out" << std::endl;
 }
 
 void VisitShop(SuperHeroesGame& game) {
@@ -480,7 +482,7 @@ int main(){
 		if (game.IsPlayerLogged()) {
 			PrintPlayerOptions();
 			std::cin.getline(command, buffer_Max_Size);
-			CheckCommand(command, '8');
+			CheckCommand(command, '9');
 
 			switch (command[0])
 			{
@@ -504,14 +506,18 @@ int main(){
 				break;
 
 			case '6':
-				ChangePositionOfSuperHero(game);
+				game.PrintPlayerSuperHeroes();
 				break;
 
 			case '7':
-				DeleteAccount(game);
+				ChangePositionOfSuperHero(game);
 				break;
 
 			case '8':
+				DeleteAccount(game);
+				break;
+
+			case '9':
 				LogOut(game);
 				break;
 			}
