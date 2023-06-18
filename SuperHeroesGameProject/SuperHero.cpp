@@ -148,3 +148,23 @@ void SuperHero::ChangePosition(){
 	else
 		position = HeroPosition::Attack;
 }
+
+void SuperHero::ReadFromFile(std::ifstream& file){
+	firstName.ReadFromFile(file);
+	lastName.ReadFromFile(file);
+	nickname.ReadFromFile(file);
+	file.read((char*)&power, sizeof(power));
+	file.read((char*)&strength, sizeof(strength));
+	file.read((char*)&price, sizeof(price));
+	file.read((char*)&position, sizeof(position));
+}
+
+void SuperHero::SaveToFile(std::ofstream& file) const{
+	firstName.SaveToFile(file);
+	lastName.SaveToFile(file);
+	nickname.SaveToFile(file);
+	file.write((const char*)&power, sizeof(power));
+	file.write((const char*)&strength, sizeof(strength));
+	file.write((const char*)&price, sizeof(price));
+	file.write((const char*)&position, sizeof(position));
+}

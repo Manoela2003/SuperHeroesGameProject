@@ -49,5 +49,8 @@ public:
 	int IsStrongerThan(const SuperHero& other) const;
 
 	void ChangePosition();
+
+	void ReadFromFile(std::ifstream& file);
+	void SaveToFile(std::ofstream& file) const;
 }; 
 
