@@ -27,6 +27,7 @@ void AdministratorLogIn(const SuperHeroesGame& game, bool& isLoggedIn) {
 		}
 		else
 			std::cout << "Wrong username or password!" << std::endl;
+		std::cin.ignore();
 	}
 	catch (std::invalid_argument& arg) {
 		std::cout << arg.what() << std::endl;
@@ -58,6 +59,9 @@ void CheckCommand(char* command, char lastOption) {
 }
 
 bool HasLoggedIn(const SuperHeroesGame& game) {
+	if (game.IsAdministratorLogged() || game.IsPlayerLogged())
+		return true;
+
 	bool isLoggedIn = false;
 
 	while (!isLoggedIn) {
@@ -93,19 +97,21 @@ void PrintAdministratorOptions() {
 	std::cout << "5. Log out" << std::endl;
 }
 
-void InputUser(char* firstName, char* lastName, char* username, char* password) {
+void InputUser(char* firstName, char* lastName, char* username, char* password, char* email) {
 	std::cout << "Enter first and last name: ";
 	std::cin >> firstName >> lastName;
+	std::cout << "Enter email: ";
+	std::cin >> email;
 	std::cout << "Enter username: ";
 	std::cin >> username;
 	std::cout << "Enter password: ";
 	std::cin >> password;
 }
 
-void AddPlayer(SuperHeroesGame& game, char* firstName, char* lastName, char* username, char* password) {
-	InputUser(firstName, lastName, username, password);
+void AddPlayer(SuperHeroesGame& game, char* firstName, char* lastName, char* username, char* password, char* email) {
+	InputUser(firstName, lastName, username, password, email);
 	try {
-		if (game.AddPlayer(firstName, lastName, username, password))
+		if (game.AddPlayer(firstName, lastName, email, username, password))
 			std::cout << "Player successfully added!" << std::endl;
 		else
 			std::cout << "Only administrators can add new players!" << std::endl;
@@ -118,18 +124,17 @@ void AddPlayer(SuperHeroesGame& game, char* firstName, char* lastName, char* use
 	}
 }
 
-void AddAdministrator(SuperHeroesGame& game, char* firstName, char* lastName, char* username, char* password) {
-	InputUser(firstName, lastName, username, password);
+void AddAdministrator(SuperHeroesGame& game, char* firstName, char* lastName, char* username, char* password, char* email) {
+	InputUser(firstName, lastName, username, password, email);
 	try {
-		if (game.AddAdministrator(firstName, lastName, username, password)) {
+		if (game.AddAdministrator(firstName, lastName, email, username, password))
 			std::cout << "Administrator successfully added!" << std::endl;
-		}
-		else {
+		else
 			std::cout << "Only administrators can add new ones!" << std::endl;
-		}
 	}
 	catch (std::exception& exc) {
 		std::cout << exc.what() << std::endl;
+		std::cout << "Administrator is NOT created successfully" << std::endl;
 	}
 	catch (...) {
 		std::cout << "Unknown error!" << std::endl;
@@ -142,6 +147,7 @@ void AddPlayerOrAdministrator(SuperHeroesGame& game) {
 
 	char firstName[buffer_Max_Size];
 	char lastName[buffer_Max_Size];
+	char email[buffer_Max_Size];
 	char username[buffer_Max_Size];
 	char password[buffer_Max_Size];
 
@@ -151,12 +157,13 @@ void AddPlayerOrAdministrator(SuperHeroesGame& game) {
 
 	switch (command[0]) {
 	case '1':
-		AddPlayer(game, firstName, lastName, username, password);
+		AddPlayer(game, firstName, lastName, email, username, password);
 		break;
 	case '2':
-		AddAdministrator(game, firstName, lastName, username, password);
+		AddAdministrator(game, firstName, lastName, email, username, password);
 		break;
 	}
+	std::cin.ignore();
 }
 
 void DeletePlayersProfile(SuperHeroesGame& game) {
@@ -273,8 +280,8 @@ void PrintSpecificAdminInfo(const SuperHeroesGame& game) {
 }
 
 void ShowInfoOfAdministrator(const SuperHeroesGame& game) {
-	std::cout << "Show all administrators" << std::endl;
-	std::cout << "Show information about specific administrator" << std::endl;
+	std::cout << "1. Show all administrators" << std::endl;
+	std::cout << "2. Show information about specific administrator" << std::endl;
 
 	char command[buffer_Max_Size];
 	std::cin.getline(command, buffer_Max_Size);
@@ -309,11 +316,12 @@ void ShowInfoOfPlayerOrAdmin(const SuperHeroesGame& game) {
 	}
 }
 
-void InputHero(char* firstName, char* lastName, char* nickname, char* power, int strength, double price) {
+void InputHero(char* firstName, char* lastName, char* nickname, char* power, int& strength, double& price) {
 	std::cout << "Enter name: ";
-	std::cin >> firstName, lastName;
+	std::cin >> firstName >> lastName;
 	std::cout << "Enter nickname: ";
-	std::cin >> nickname;
+	std::cin.ignore();
+	std::cin.getline(nickname, buffer_Max_Size);
 	std::cout << "Enter type of power: ";
 	std::cin >> power;
 	std::cout << "Enter strength: ";
@@ -339,6 +347,7 @@ void AddHeroToTheShop(SuperHeroesGame& game) {
 	catch (...) {
 		std::cout << "Unknown error!" << std::endl;
 	}
+	std::cin.ignore();
 }
 
 void PrintPlayerOptions() {
@@ -452,13 +461,22 @@ void LogOut(const SuperHeroesGame& game) {
 	}
 }
 
-int main()
-{
+int main(){
 	SuperHeroesGame game;
-	game.AddAdministrator("Mebg", "Ewgewg", "aannitoo", "Aniichka@1");
+	while (!game.AreThereAdministrators()) {
+		std::cout << "Welcome! You are logged in as administrator due to the lack of one." << std::endl;
+		std::cout << "Please add another administrator before proceeding!" << std::endl;
+		char firstName[buffer_Max_Size];
+		char lastName[buffer_Max_Size];
+		char email[buffer_Max_Size];
+		char username[buffer_Max_Size];
+		char password[buffer_Max_Size];
+		AddAdministrator(game, firstName, lastName, username, password, email);
+	}
+
 	while (HasLoggedIn(game)) {
-		bool isSuccessful = false;
 		char command[buffer_Max_Size];
+
 		if (game.IsPlayerLogged()) {
 			PrintPlayerOptions();
 			std::cin.getline(command, buffer_Max_Size);
