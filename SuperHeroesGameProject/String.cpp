@@ -131,6 +131,7 @@ const char* String::c_str() const
 
 void String::ReadFromFile(std::ifstream& file){
 	file.read((char*)&_length, sizeof(_length));
+	_data = new char[_length + 1];
 	file.read((char*)_data, _length + 1);
 }
 
