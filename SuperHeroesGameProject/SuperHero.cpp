@@ -97,6 +97,13 @@ void SuperHero::SetHeroPosition(HeroPosition position) {
 	this->position = position;
 }
 
+void SuperHero::PrintPosition() const{
+	if (position == HeroPosition::Attack)
+		std::cout << "Attack" << std::endl;
+	else if(position == HeroPosition::Defense)
+		std::cout << "Defense" << std::endl;
+}
+
 void SuperHero::PrintPower() const {
 	if (power == HeroPower::Earth)
 		std::cout << "Earth" << std::endl;
@@ -104,6 +111,16 @@ void SuperHero::PrintPower() const {
 		std::cout << "Fire" << std::endl;
 	else if (power == HeroPower::Water)
 		std::cout << "Water" << std::endl;
+}
+
+void SuperHero::PrintAllInfo() const{
+	std::cout << "Name: " << firstName << ' ' << lastName << std::endl;
+	std::cout << "Nickname: " << nickname << std::endl;
+	std::cout << "Type: ";
+	PrintPower();
+	std::cout << "Strength: " << strength << std::endl;
+	std::cout << "Position: ";
+	PrintPosition();
 }
 
 void SuperHero::PrintDetailedInfo() const{

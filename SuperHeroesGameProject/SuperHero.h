@@ -41,7 +41,9 @@ public:
 	void SetPrice(double price);
 	void SetHeroPosition(HeroPosition position);
 
+	void PrintPosition() const;
 	void PrintPower() const;
+	void PrintAllInfo() const;
 	void PrintDetailedInfo() const;
 	void PrintUndetailedInfo() const;
 
