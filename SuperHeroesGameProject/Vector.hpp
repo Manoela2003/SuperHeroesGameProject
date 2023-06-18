@@ -26,6 +26,7 @@ public:
 	void AddElement(const T& obj);
 	void AddElement(T&& obj);
 	void RemoveElement(int index);
+	void Swap(T& first, T& second);
 	const T& operator[](int index) const;
 	T& operator[](int index);
 };
@@ -93,11 +94,6 @@ void Vector<T>::AddElement(T&& obj){
 	data[count++] = std::move(obj);
 }
 
-//template<typename T>
-//void Vector<T>::SaveToFile(){
-//
-//}
-
 template<typename T>
 void Vector<T>::RemoveElement(int index) {
 	if (index < 0 || index >= count)
@@ -106,6 +102,13 @@ void Vector<T>::RemoveElement(int index) {
 	for (int i = index; i < count - 1; i++)
 		data[i] = data[i + 1];
 	--count;
+}
+
+template<typename T>
+void Vector<T>::Swap(T& first, T& second){
+	T temp = std::move(first);
+	first = std::move(second);
+	second = std::move(temp);
 }
 
 template<typename T>
