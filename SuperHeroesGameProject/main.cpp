@@ -34,7 +34,7 @@ void AdministratorLogIn(const SuperHeroesGame& game, bool& isLoggedIn) {
 	std::cin.ignore();
 }
 
-void PlayerLogIn(const SuperHeroesGame& game, bool& isLoggedIn) {
+void PlayerLogIn(SuperHeroesGame& game, bool& isLoggedIn) {
 	char username[buffer_Max_Size];
 	char password[buffer_Max_Size];
 	LogInInput(username, password);
@@ -59,7 +59,7 @@ void CheckCommand(char* command, char lastOption) {
 	}
 }
 
-bool HasLoggedIn(const SuperHeroesGame& game) {
+bool HasLoggedIn(SuperHeroesGame& game) {
 	if (game.IsAdministratorLogged() || game.IsPlayerLogged())
 		return true;
 
@@ -132,6 +132,7 @@ void AddAdministrator(SuperHeroesGame& game, char* firstName, char* lastName, ch
 			std::cout << "Administrator successfully added!" << std::endl;
 		else
 			std::cout << "Only administrators can add new ones!" << std::endl;
+		std::cin.ignore();
 	}
 	catch (std::exception& exc) {
 		std::cout << exc.what() << std::endl;
@@ -177,6 +178,7 @@ void DeletePlayersProfile(SuperHeroesGame& game) {
 			std::cout << username << " deleted successfully!" << std::endl;
 		else
 			std::cout << "There is no player with such username!" << std::endl;
+		std::cin.ignore();
 	}
 	catch (std::invalid_argument& inv) {
 		std::cout << inv.what() << std::endl;
@@ -332,23 +334,58 @@ void InputHero(char* firstName, char* lastName, char* nickname, char* power, int
 }
 
 void AddHeroToTheShop(SuperHeroesGame& game) {
-	char firstName[buffer_Max_Size], lastName[buffer_Max_Size], nickname[buffer_Max_Size], power[buffer_Max_Size];
-	int strength = 0;
-	double price = 0;
-	InputHero(firstName, lastName, nickname, power, strength, price);
+	std::cout << "1. Add hero manually" << std::endl;
+	std::cout << "2. Use one from the old Superheroes" << std::endl;
+
+	char command[buffer_Max_Size];
+	std::cin.getline(command, buffer_Max_Size);
+	CheckCommand(command, '2');
+
 	try {
-		if (game.AddSuperHero(firstName, lastName, nickname, power, strength, price))
-			std::cout << "Hero successfully added!" << std::endl;
-		else
-			std::cout << "Only administrators can add new heroes!" << std::endl;
+		switch (command[0]) {
+		case '1': {
+			char firstName[buffer_Max_Size], lastName[buffer_Max_Size], nickname[buffer_Max_Size], power[buffer_Max_Size];
+			int strength = 0;
+			double price = 0;
+			InputHero(firstName, lastName, nickname, power, strength, price);
+			if (game.AddSuperHero(firstName, lastName, nickname, power, strength, price))
+				std::cout << "Hero successfully added!" << std::endl;
+			else
+				std::cout << "Only administrators can add new heroes!" << std::endl;
+			std::cin.ignore();
+		}
+				break;
+		case '2': {
+			if (!game.PrintOldSuperHeroes())
+				std::cout << "There aren't any old Superheroes." << std::endl;
+			else {
+				int index;
+				std::cout << "Pick a hero: ";
+				std::cin >> index;
+				int count = game.GetCountOfOldHeroes();
+				while (index <= 0 || index > count) {
+					std::cout << "Wrong number! Type a number between 1 and " << count << ": ";
+					std::cin >> index;
+				}
+				if (game.AddSuperHero(std::move(game.GetOldSuperHero(index - 1))))
+					std::cout << "Hero successfully added!" << std::endl;
+				else {
+					std::cout << "Only administrators can add new heroes!" << std::endl;
+					game.RemoveOldSuperHero(index - 1);
+				}
+				std::cin.ignore();
+			}
+		}
+				break;
+		}
 	}
 	catch (std::exception& exc) {
 		std::cout << exc.what() << std::endl;
+		std::cin.ignore();
 	}
 	catch (...) {
 		std::cout << "Unknown error!" << std::endl;
 	}
-	std::cin.ignore();
 }
 
 void PrintPlayerOptions() {
@@ -371,7 +408,7 @@ void VisitShop(SuperHeroesGame& game) {
 	}
 
 	std::cout << "If you want to go to the main menu type 'back'" << std::endl;
-	std::cout << "Enter Superhero name you wish to buy: ";
+	std::cout << "Enter Superhero you wish to buy: ";
 
 	char input[buffer_Max_Size];
 	std::cin.getline(input, buffer_Max_Size);
@@ -381,6 +418,7 @@ void VisitShop(SuperHeroesGame& game) {
 	if (game.BuySuperHero(input)) {
 		std::cout << input << " bought successfully!" << std::endl;
 		game.PrintPlayerBalance();
+		game.SaveRanking();
 	}
 	else {
 		std::cout << "Insufficent balance" << std::endl;
@@ -405,6 +443,13 @@ void AttackSuperHero(SuperHeroesGame& game) {
 			return;
 		}
 
+		if (game.GetCountOfSuperHeroes(playerIndex) == 0) {
+			game.AttackDefenseless(playerIndex, indexOfAttacker);
+			game.SaveRanking();
+			std::cout << "You won!" << std::endl;
+			return;
+		}
+
 		std::cout << "Enter Superhero you want to attack or type 'random': ";
 		std::cin.getline(hero, buffer_Max_Size);
 		int indexOfAttacked = game.IndexOfSuperHero(hero, playerIndex);
@@ -413,8 +458,6 @@ void AttackSuperHero(SuperHeroesGame& game) {
 			srand(time(0));
 			indexOfAttacked = rand() % game.GetCountOfSuperHeroes(playerIndex);
 		}
-		else
-			indexOfAttacked = game.IndexOfSuperHero(hero);
 
 		if (indexOfAttacked == -1) {
 			std::cout << "There is no such Superhero" << std::endl;
@@ -425,6 +468,7 @@ void AttackSuperHero(SuperHeroesGame& game) {
 			std::cout << "You won!" << std::endl;
 		else
 			std::cout << "You lost!" << std::endl;
+		game.SaveRanking();
 	}
 	else {
 		std::cout << "There is no such player!" << std::endl;
@@ -463,7 +507,17 @@ void LogOut(const SuperHeroesGame& game) {
 	}
 }
 
-int main(){
+void AddNeededSuperHeroes(SuperHeroesGame& game) {
+	while (game.GetHeroesInShopCount() < 3) {
+		int count = game.GetHeroesInShopCount();
+		std::cout << "The current count of Superheroes in the shop is: "
+			<< count << std::endl;
+		std::cout << "You should add at least " << 3 - count << " new Superheroes!" << std::endl;
+		AddHeroToTheShop(game);
+	}
+}
+
+int main() {
 	SuperHeroesGame game;
 	while (!game.AreThereAdministrators()) {
 		std::cout << "Welcome! You are logged in as administrator due to the lack of one." << std::endl;
@@ -491,6 +545,7 @@ int main(){
 				break;
 
 			case '2':
+				game.ShowRanking();
 				break;
 
 			case '3':
@@ -523,6 +578,7 @@ int main(){
 			}
 		}
 		else if (game.IsAdministratorLogged()) {
+			AddNeededSuperHeroes(game);
 			PrintAdministratorOptions();
 			std::cin.getline(command, buffer_Max_Size);
 			CheckCommand(command, '5');
