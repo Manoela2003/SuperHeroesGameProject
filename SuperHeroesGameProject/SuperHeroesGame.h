@@ -10,16 +10,24 @@ private:
 	Vector<SharedPtr<Player>> players;
 	UniquePtr<Shop> shop = new Shop();
 
-	mutable int indexOfloggedInAdmin = 1; //just for testing, fix it later!!
+	mutable int indexOfloggedInAdmin = -1;
 	mutable int indexOfloggedInPlayer = -1;
+
+	void SaveAdminsToFile() const;
+	void SavePlayersToFile() const;
+	void SaveShopToFile() const;
+
+	void ReadAdminsFromFile();
+	void ReadPlayersFromFile();
+	void ReadShopFromFile();
 
 public:
 	SuperHeroesGame();
 
 	bool LogInAsAdministrator(const char* username, const char* password) const;
 	bool LogInAsPlayer(const char* username, const char* password) const;
-	bool AddAdministrator(const char* firstName, const char* lastName, const char* username, const char* password);
-	bool AddPlayer(const char* firstName, const char* lastName, const char* username, const char* password);
+	bool AddAdministrator(const char* firstName, const char* lastName, const char* email, const char* username, const char* password);
+	bool AddPlayer(const char* firstName, const char* lastName, const char* email, const char* username, const char* password);
 	bool DeletePlayer(const char* username);
 	bool DeleteOwnProfile();
 	bool AddSuperHero(const char* firstName, const char* lastName, const char* nickname, const char* power, int strength, double price);
@@ -41,6 +49,7 @@ public:
 
 	int GetCountOfSuperHeroes(int playerIndex) const;
 	bool ChangePositionOfSuperHero(const char* nickname);
+	bool AreThereAdministrators() const;
 
 	void LogOut() const;
 

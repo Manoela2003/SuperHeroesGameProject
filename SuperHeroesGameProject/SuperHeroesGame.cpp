@@ -2,10 +2,10 @@
 #include <cmath>
 #include "FileFunctions.h"
 
-SuperHeroesGame::SuperHeroesGame(){
-	ReadVector<Administrator>(adminFile, administrators);
-	ReadVector<Player>(playerFile, players);
-	shop->ReadFromFile(shopFile);
+SuperHeroesGame::SuperHeroesGame() {
+	ReadAdminsFromFile();
+	ReadPlayersFromFile();
+	ReadShopFromFile();
 }
 
 bool SuperHeroesGame::LogInAsAdministrator(const char* username, const char* password) const {
@@ -38,17 +38,17 @@ bool SuperHeroesGame::LogInAsPlayer(const char* username, const char* password) 
 	return false;
 }
 
-bool SuperHeroesGame::AddAdministrator(const char* firstName, const char* lastName, const char* username, const char* password) {
+bool SuperHeroesGame::AddAdministrator(const char* firstName, const char* lastName, const char* email, const char* username, const char* password) {
 	if (indexOfloggedInAdmin != -1) {
-		administrators.AddElement(new Administrator(firstName, lastName, username, password));
+		administrators.AddElement(new Administrator(firstName, lastName, email, username, password));
 		return true;
 	}
 	return false;
 }
 
-bool SuperHeroesGame::AddPlayer(const char* firstName, const char* lastName, const char* username, const char* password) {
+bool SuperHeroesGame::AddPlayer(const char* firstName, const char* lastName, const char* email, const char* username, const char* password) {
 	if (indexOfloggedInAdmin != -1) {
-		players.AddElement(new Player(firstName, lastName, username, password));
+		players.AddElement(new Player(firstName, lastName, email, username, password));
 		return true;
 	}
 	return false;
@@ -240,6 +240,14 @@ bool SuperHeroesGame::ChangePositionOfSuperHero(const char* nickname) {
 	return true;
 }
 
+bool SuperHeroesGame::AreThereAdministrators() const {
+	if (administrators.GetCount() == 0) {
+		indexOfloggedInAdmin = 0; // gives administrator permissions
+		return false;
+	}
+	return true;
+}
+
 void SuperHeroesGame::LogOut() const {
 	if (indexOfloggedInAdmin == -1 && indexOfloggedInPlayer == -1)
 		throw std::logic_error("You are not logged in");
@@ -247,8 +255,150 @@ void SuperHeroesGame::LogOut() const {
 	indexOfloggedInAdmin = indexOfloggedInPlayer = -1;
 }
 
-SuperHeroesGame::~SuperHeroesGame(){
-	SaveVector<Administrator>(adminFile, administrators);
-	SaveVector<Player>(playerFile, players);
-	shop->SaveToFile(shopFile);
+void SuperHeroesGame::SaveAdminsToFile() const {
+	std::ofstream file(adminFile, std::ios::binary);
+
+	if (!file.is_open())
+		throw std::exception("The file couldn't open!");
+
+	unsigned count = administrators.GetCount();
+	if (count == 0) // leaves the file empty
+		return;
+
+	file.write((const char*)&count, sizeof(count));
+	for (int i = 0; i < count; i++) {
+		administrators[i]->firstName.SaveToFile(file);
+		administrators[i]->lastName.SaveToFile(file);
+		administrators[i]->email.SaveToFile(file);
+		administrators[i]->username.SaveToFile(file);
+		administrators[i]->password.SaveToFile(file);
+	}
+
+	file.close();
+}
+
+void SuperHeroesGame::SavePlayersToFile() const {
+	std::ofstream file(playerFile, std::ios::binary);
+
+	if (!file.is_open())
+		throw std::exception("The file couldn't open!");
+
+	unsigned count = players.GetCount();
+	if (count == 0) // leaves the file empty
+		return;
+
+	file.write((const char*)&count, sizeof(count));
+	for (int i = 0; i < count; i++) {
+		players[i]->firstName.SaveToFile(file);
+		players[i]->lastName.SaveToFile(file);
+		players[i]->email.SaveToFile(file);
+		players[i]->username.SaveToFile(file);
+		players[i]->password.SaveToFile(file);
+		file.write((const char*)&players[i]->balance, sizeof(players[i]->balance));
+		unsigned heroesCount = players[i]->heroes.GetCount();
+		file.write((const char*)&heroesCount, sizeof(heroesCount));
+		for (int i = 0; i < heroesCount; i++)
+			players[i]->heroes[i]->SaveToFile(file);
+	}
+
+	file.close();
+}
+
+void SuperHeroesGame::SaveShopToFile() const {
+	std::ofstream file(shopFile, std::ios::binary);
+
+	if (!file.is_open())
+		throw std::exception("The file couldn't open!");
+
+	unsigned count = shop->GetCount();
+	if (count == 0) // leaves the file empty
+		return;
+
+	file.write((const char*)&count, sizeof(count));
+	shop->SaveToFile(file);
+
+	file.close();
+}
+
+static void ReadUser(std::ifstream& file, char* fName, char* lName, char* email, char* username, char* password) {
+	size_t size;
+	file.read((char*)&size, sizeof(size));
+	file.read((char*)fName, size + 1);
+	file.read((char*)&size, sizeof(size));
+	file.read((char*)lName, size + 1);
+	file.read((char*)&size, sizeof(size));
+	file.read((char*)email, size + 1);
+	file.read((char*)&size, sizeof(size));
+	file.read((char*)username, size + 1);
+	file.read((char*)&size, sizeof(size));
+	file.read((char*)password, size + 1);
+}
+
+void SuperHeroesGame::ReadAdminsFromFile(){
+	std::ifstream file(adminFile, std::ios::binary);
+
+	if (!file.is_open())
+		throw std::exception("The file couldn't open!");
+
+	unsigned count = 0;
+	file.read((char*)&count, sizeof(count));
+
+	for (int i = 0; i < count; i++) {
+		char fName[buffer_Max_Size];
+		char lName[buffer_Max_Size];
+		char email[buffer_Max_Size];
+		char username[buffer_Max_Size];
+		char password[buffer_Max_Size];
+		ReadUser(file, fName, lName, email, username, password);
+		administrators.AddElement(new Administrator(fName, lName, email, username, password));
+	}
+
+	file.close();
+}
+
+void SuperHeroesGame::ReadPlayersFromFile(){
+	std::ifstream file(playerFile, std::ios::binary);
+
+	if (!file.is_open())
+		throw std::exception("The file couldn't open!");
+
+	unsigned count = 0;
+	file.read((char*)&count, sizeof(count));
+
+	for (int i = 0; i < count; i++) {
+		char fName[buffer_Max_Size];
+		char lName[buffer_Max_Size];
+		char email[buffer_Max_Size];
+		char username[buffer_Max_Size];
+		char password[buffer_Max_Size];
+		ReadUser(file, fName, lName, email, username, password);
+		players.AddElement(new Player(fName, lName, email, username, password));
+		file.read((char*)&players[i]->balance, sizeof(players[i]->balance));
+		unsigned heroesCount;
+		file.read((char*)&heroesCount, sizeof(heroesCount));
+		for (int j = 0; j < heroesCount; j++) {
+			SuperHero hero;
+			hero.ReadFromFile(file);
+			players[j]->heroes.AddElement(new SuperHero(std::move(hero)));
+		}
+	}
+
+	file.close();
+}
+
+void SuperHeroesGame::ReadShopFromFile(){
+	std::ifstream file(shopFile, std::ios::binary);
+
+	if (!file.is_open())
+		throw std::exception("The file couldn't open!");
+
+	shop->ReadFromFile(file);
+
+	file.close();
+}
+
+SuperHeroesGame::~SuperHeroesGame() {
+	SaveAdminsToFile();
+	SavePlayersToFile();
+	SaveShopToFile();
 }

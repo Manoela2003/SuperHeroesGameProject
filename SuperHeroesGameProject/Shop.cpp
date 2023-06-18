@@ -6,6 +6,10 @@ static void PrintDashes(int dashesCount) {
 		std::cout << '-';
 }
 
+int Shop::GetCount() const{
+	return superHeroes.GetCount();
+}
+
 bool Shop::IsShopEmpty() const {
 	return superHeroes.GetCount() == 0;
 }
@@ -46,10 +50,17 @@ SuperHero Shop::FindSuperHero(const char* nickname) const{
 	throw std::logic_error("There is no such SuperHero");
 }
 
-void Shop::ReadFromFile(const char* fileName){
-	ReadVector<SuperHero>(fileName, superHeroes);
+void Shop::ReadFromFile(std::ifstream& file){
+	unsigned count = 0;
+	file.read((char*)&count, sizeof(count));
+	for (int i = 0; i < count; i++) {
+		SuperHero hero;
+		hero.ReadFromFile(file);
+		superHeroes.AddElement(new SuperHero(std::move(hero)));
+	}
 }
 
-void Shop::SaveToFile(const char* fileName) const{
-	SaveVector<SuperHero>(fileName, superHeroes);
+void Shop::SaveToFile(std::ofstream& file) const{
+	for (int i = 0; i < superHeroes.GetCount(); i++)
+		superHeroes[i]->SaveToFile(file);
 }
