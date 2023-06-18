@@ -11,6 +11,7 @@ private:
 	Vector<SharedPtr<SuperHero>> heroes;
 
 public:
+	Player() = default;
 	Player(const char* firstName, const char* lastName, const char* username, const char* password);
 	Player(const char* firstName, const char* lastName, const char* email, const char* username, const char* password);
 
