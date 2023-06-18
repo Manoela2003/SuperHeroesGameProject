@@ -124,7 +124,7 @@ void SuperHero::PrintAllInfo() const{
 }
 
 void SuperHero::PrintDetailedInfo() const{
-	std::cout << "Name: " << firstName << ' ' << lastName << std::endl;
+	std::cout << "Nickname: " << nickname << std::endl;
 	std::cout << "Price: " << price << '$' << std::endl;
 	std::cout << "Type: ";
 	PrintPower();
@@ -138,7 +138,9 @@ void SuperHero::PrintUndetailedInfo() const {
 
 int SuperHero::IsDominating(const SuperHero& other) const{
 	if (power == HeroPower::Fire) {
-		return (other.power == HeroPower::Fire) ? 0 : 1;
+		if (other.power == HeroPower::Fire)
+			return 0;
+		return (other.power == HeroPower::Earth) ? 1 : -1;
 	}
 	else if (power == HeroPower::Earth) {
 		if (other.power == HeroPower::Water)
@@ -152,11 +154,11 @@ int SuperHero::IsDominating(const SuperHero& other) const{
 	}
 }
 
-int SuperHero::IsStrongerThan(const SuperHero& other) const{
-	if (power > other.power)
+int SuperHero::IsStrongerThan(const SuperHero& other, int attackerIncr, int attackedIncr) const{
+	if (strength * attackerIncr > other.strength * attackedIncr)
 		return 1;
 
-	return (power < other.power) ? -1 : 0;
+	return (strength * attackerIncr < other.strength * attackedIncr) ? -1 : 0;
 }
 
 void SuperHero::ChangePosition(){

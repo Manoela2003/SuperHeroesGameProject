@@ -48,7 +48,7 @@ public:
 	void PrintUndetailedInfo() const;
 
 	int IsDominating(const SuperHero& other) const;
-	int IsStrongerThan(const SuperHero& other) const;
+	int IsStrongerThan(const SuperHero& other, int attackerIncr, int attackedIncr) const;
 
 	void ChangePosition();
 
