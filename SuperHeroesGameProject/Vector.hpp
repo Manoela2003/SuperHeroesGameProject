@@ -15,7 +15,7 @@ private:
 
 public:
 	Vector();
-	Vector(int capacity);
+	Vector(unsigned capacity);
 	Vector(const Vector& other);
 	Vector(Vector&& other);
 	Vector<T>& operator=(const Vector& other);
@@ -24,6 +24,7 @@ public:
 
 	unsigned GetCount() const;
 	void AddElement(const T& obj);
+	void AddElement(T&& obj);
 	void RemoveElement(int index);
 	const T& operator[](int index) const;
 	T& operator[](int index);
@@ -33,10 +34,7 @@ template<typename T>
 Vector<T>::Vector() : Vector(4) {}
 
 template<typename T>
-Vector<T>::Vector(int capacity) {
-	if (capacity <= 0)
-		throw std::invalid_argument("The capacity cannot be less than 1!");
-
+Vector<T>::Vector(unsigned capacity) {
 	this->capacity = capacity;
 	data = new T[capacity];
 }
@@ -75,7 +73,7 @@ Vector<T>::~Vector() {
 }
 
 template<typename T>
-unsigned Vector<T>::GetCount() const{
+unsigned Vector<T>::GetCount() const {
 	return count;
 }
 
@@ -88,17 +86,30 @@ void Vector<T>::AddElement(const T& obj) {
 }
 
 template<typename T>
-void Vector<T>::RemoveElement(int index){
+void Vector<T>::AddElement(T&& obj){
+	if (count == capacity)
+		resize();
+
+	data[count++] = std::move(obj);
+}
+
+//template<typename T>
+//void Vector<T>::SaveToFile(){
+//
+//}
+
+template<typename T>
+void Vector<T>::RemoveElement(int index) {
 	if (index < 0 || index >= count)
 		throw std::out_of_range("The index is out of range");
-	
+
 	for (int i = index; i < count - 1; i++)
 		data[i] = data[i + 1];
 	--count;
 }
 
 template<typename T>
-const T& Vector<T>::operator[](int index) const{
+const T& Vector<T>::operator[](int index) const {
 	if (index < 0 || index >= count)
 		throw std::out_of_range("The index is out of range");
 
@@ -106,7 +117,7 @@ const T& Vector<T>::operator[](int index) const{
 }
 
 template<typename T>
-T& Vector<T>::operator[](int index){
+T& Vector<T>::operator[](int index) {
 	if (index < 0 || index >= count)
 		throw std::out_of_range("The index is out of range");
 
