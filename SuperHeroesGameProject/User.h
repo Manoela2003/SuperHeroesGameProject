@@ -23,8 +23,8 @@ public:
 	void PrintName() const;
 	void PrintEmail() const;
 	void PrintUsername() const;
-	virtual void PrintInfo() const = 0;
 	bool IsEmailEmpty() const;
 
+	virtual void PrintInfo() const = 0;
 	virtual ~User() = default;
 };

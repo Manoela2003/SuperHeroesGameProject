@@ -51,11 +51,7 @@ void User::PrintName() const {
 }
 
 void User::PrintEmail() const {
-	std::cout << "Email: ";
-	if (IsEmailEmpty())
-		std::cout << "'email not set'" << std::endl;
-	else
-		std::cout << email << std::endl;
+	std::cout << "Email: " << email << std::endl;
 }
 
 void User::PrintUsername() const{

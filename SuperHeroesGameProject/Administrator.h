@@ -1,5 +1,6 @@
 #pragma once
 #include "User.h"
+#include <fstream>
 
 class Administrator : public User {
 public:
@@ -8,7 +9,6 @@ public:
 	Administrator(const char* firstName, const char* lastName, const char* email, const char* username, const char* password);
 
 	void PrintInfo() const override;
-
 	friend class SuperHeroesGame;
 };
 
