@@ -1,6 +1,5 @@
 #include "SuperHeroesGame.h"
 #include <cmath>
-#include "FileFunctions.h"
 
 SuperHeroesGame::SuperHeroesGame() {
 	ReadAdminsFromFile();
@@ -138,6 +137,11 @@ bool SuperHeroesGame::IsPlayerLogged() const {
 }
 
 void SuperHeroesGame::PrintOtherPlayersInfo() const {
+	if (players.GetCount() == 1) {
+		std::cout << "There are no other players!" << std::endl;
+		return;
+	}
+
 	for (int i = 0; i < players.GetCount(); i++) {
 		if (i == indexOfloggedInPlayer)
 			continue;
@@ -157,6 +161,20 @@ void SuperHeroesGame::PrintPlayerBalance() const {
 		players[indexOfloggedInPlayer]->PrintBalance();
 	else
 		throw std::logic_error("You must be logged in first");
+}
+
+void SuperHeroesGame::PrintPlayerSuperHeroes() const{
+	if(indexOfloggedInPlayer == -1)
+		throw std::logic_error("Only players can see their Superheroes");
+
+	int count = players[indexOfloggedInPlayer]->GetHeroesCount();
+	if (count == 0) {
+		std::cout << "You don't have any SuperHeroes!" << std::endl;
+		return;
+	}
+
+	for (int i = 0; i < count; i++)
+		players[indexOfloggedInPlayer]->heroes[i]->PrintAllInfo();
 }
 
 bool SuperHeroesGame::BuySuperHero(const char* nickname) {

@@ -41,6 +41,7 @@ public:
 	void PrintOtherPlayersInfo() const;
 	bool PrintShop() const;
 	void PrintPlayerBalance() const;
+	void PrintPlayerSuperHeroes() const;
 
 	bool BuySuperHero(const char* nickname);
 	int IndexOfPlayer(const char* username) const;
